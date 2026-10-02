@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previdenza SimPro - Simulatore Fondo Pensione</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --bg-light: #f8f9fa;
+        }
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: none;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: white;
+            border-bottom: 2px solid var(--bg-light);
+            font-weight: 600;
+            border-radius: 12px 12px 0 0 !important;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            height: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 10px;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        .tax-saving-box {
+            background-color: #e8f5e9;
+            border-left: 5px solid var(--success-color);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .highlight-text {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary"><i class="bi bi-shield-check"></i> Previdenza SimPro</h1>
+        <p class="lead text-secondary">Simulatore Avanzato Fondo Pensione Negoziale con Analisi Fiscale</p>
+    </div>
+
+    <div class="row">
+        <!-- Colonna Inputs -->
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header text-primary">
+                    <i class="bi bi-sliders"></i> Parametri di Calcolo
+                </div>
+                <div class="card-body">
+                    <form id="simForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">RAL (Retribuzione Annua Lorda) €</label>
+                            <input type="number" class="form-control" id="ral" value="35000" step="1000">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Contratto (CCNL) di riferimento</label>
+                            <select class="form-select" id="ccnl">
+                                <option value="commercio" selected>Commercio (Es. Fon.Te)</option>
+                                <option value="metalmeccanici">Metalmeccanico (Es. Cometa)</option>
+                                <option value="moda">Moda / Tessile (Es. Previmoda)</option>
+                                <option value="chimico">Chimico / Farmaceutico (Es. Fonchim)</option>
+                                <option value="alimentare">Alimentare (Es. Alifond)</option>
+                                <option value="altro">Altro / Generico</option>
+                            </select>
+                            <small class="text-muted" id="ccnl-help">Dati minimi inseriti automaticamente.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contributo Volontario Lavoratore (%)</label>
+                            <input type="number" class="form-control" id="pct_lav" value="0.55" step="0.05">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contributo Datore di Lavoro (%)</label>
+                            <input type="number" class="form-control" id="pct_az" value="1.55" step="0.05">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Quota TFR da destinare</label>
+                            <select class="form-select" id="quota_tfr">
+                                <option value="100" selected>100% del TFR maturando</option>
+                                <option value="50">50% del TFR maturando</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Anni al pensionamento</label>
+                            <input type="number" class="form-control" id="anni" value="30" min="1" max="50">
+                        </div>
+                        <button type="button" class="btn btn-primary w-100 fw-bold" onclick="calcolaSimulazione()">
+                            <i class="bi bi-calculator"></i> Calcola Ora
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colonna Outputs -->
+        <div class="col-lg-8">
+            <!-- KPIs -->
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="stat-card">
+                        <i class="bi bi-wallet2 text-secondary fs-2"></i>
+                        <div class="stat-label mt-2">Costo Netto Mensile (Tasca Mia)</div>
+                        <div class="stat-value" id="out_costo_netto">€ 0,00</div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="stat-card">
+                        <i class="bi bi-piggy-bank text-primary fs-2"></i>
+                        <div class="stat-label mt-2">Versamento Mensile nel Fondo</div>
+                        <div class="stat-value" id="out_versamento_totale">€ 0,00</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card border-success border">
+                        <i class="bi bi-cash-coin text-success fs-2"></i>
+                        <div class="stat-label mt-2">Risparmio Fiscale (IRPEF + TFR) Annuo</div>
+                        <div class="stat-value text-success" id="out_risparmio_fiscale">€ 0,00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Focus Fiscale -->
+            <div class="card tax-saving-box mb-4">
+                <h5 class="text-success"><i class="bi bi-info-circle-fill"></i> Analisi Risparmio Fiscale</h5>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <strong><i class="bi bi-check2-square"></i> Deduzione in busta paga:</strong>
+                        <p class="mb-1 text-muted small">Lo Stato ti rimborsa l'IRPEF marginale (<span id="val_irpef_marg">0</span>%) sui tuoi versamenti. Su un versamento annuo di <span id="val_versato_lav">0</span>€, recuperi <strong class="text-dark"><span id="val_recupero_irpef">0</span>€</strong> netti ogni anno.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong><i class="bi bi-check2-square"></i> Vantaggio Tasse TFR:</strong>
+                        <p class="mb-0 text-muted small">In azienda il TFR sarebbe tassato all'aliquota media (stimata al <strong class="text-danger"><span id="val_tfr_az">0</span>%</strong>). Nel Fondo Pensione scende progressivamente fino al <strong class="highlight-text"><span id="val_tfr_fondo">0</span>%</strong>. <br>Risparmio stimato a fine periodo: <strong class="text-dark"><span id="val_risparmio_tfr_tot">0</span>€</strong> sulle tasse del TFR.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabella Mensile / Annua -->
+            <div class="card">
+                <div class="card-header text-primary">
+                    <i class="bi bi-table"></i> Dettaglio Flussi Mensili e Annui
+                </div>
+                <div class="card-body table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Voce</th>
+                                <th>Mensile (€)</th>
+                                <th>Annuo (€)</th>
+                                <th>% su RAL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Popolato via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Grafico e Proiezioni -->
+            <div class="card">
+                <div class="card-header text-primary d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-graph-up"></i> Proiezione a <span id="out_anni_grafico">30</span> anni</span>
+                </div>
+                <div class="card-body">
+                    <canvas id="projectionChart" height="120"></canvas>
+                    
+                    <div class="table-responsive mt-4">
+                        <table class="table table-bordered table-sm text-center align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-start">Comparto</th>
+                                    <th>Costo "Tasca Mia" Tot.</th>
+                                    <th>Versato Totale (Lav+Az+TFR)</th>
+                                    <th>Montante Finale Lordo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projTableBody">
+                                <!-- Popolato via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dati CCNL Preimpostati
+    const ccnlData = {
+        "commercio": { lav: 0.55, az: 1.55 },
+        "metalmeccanici": { lav: 1.20, az: 2.00 },
+        "moda": { lav: 1.50, az: 2.00 },
+        "chimico": { lav: 1.20, az: 2.10 },
+        "alimentare": { lav: 1.20, az: 1.20 },
+        "altro": { lav: 1.00, az: 0.55 }
+    };
+
+    let chartInstance = null;
+
+    // Aggiorna gli input quando cambia il CCNL
+    document.getElementById('ccnl').addEventListener('change', function() {
+        const selected = this.value;
+        const data = ccnlData[selected];
+        document.getElementById('pct_lav').value = data.lav.toFixed(2);
+        document.getElementById('pct_az').value = data.az.toFixed(2);
+    });
+
+    // Formattatore Valuta
+    const formatEur = (num) => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(num);
+    const formatNum = (num) => new Intl.NumberFormat('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+
+    function calcolaIRPEF(ral) {
+        let tax = 0;
+        if (ral <= 28000) tax = ral * 0.23;
+        else if (ral <= 50000) tax = (28000 * 0.23) + ((ral - 28000) * 0.35);
+        else tax = (28000 * 0.23) + (22000 * 0.35) + ((ral - 50000) * 0.43);
+        return tax;
+    }
+
+    function calcolaSimulazione() {
+        // Lettura Inputs
+        const ral = parseFloat(document.getElementById('ral').value);
+        const pct_lav = parseFloat(document.getElementById('pct_lav').value) / 100;
+        const pct_az = parseFloat(document.getElementById('pct_az').value) / 100;
+        const quota_tfr_pct = parseFloat(document.getElementById('quota_tfr').value) / 100;
+        const anni = parseInt(document.getElementById('anni').value);
+
+        // 1. Calcoli Base
+        const tfr_annuo = (ral / 13.5) * (1 - 0.005) * quota_tfr_pct; // Circa 6.91% * Quota
+        const lav_annuo = ral * pct_lav;
+        const az_annuo = ral * pct_az;
+
+        // 2. Aliquote Fisco
+        let aliquota_marginale = 0.23;
+        if (ral > 28000 && ral <= 50000) aliquota_marginale = 0.35;
+        if (ral > 50000) aliquota_marginale = 0.43;
+
+        let irpef_media = calcolaIRPEF(ral) / ral;
+        let aliquota_tfr_azienda = Math.max(0.23, irpef_media); 
+        
+        let aliquota_tfr_fondo = 0.15;
+        if (anni > 15) {
+            aliquota_tfr_fondo = Math.max(0.09, 0.15 - ((anni - 15) * 0.003));
+        }
+
+        // 3. Risparmio e Deduzioni
+        const risparmio_irpef_annuo = Math.min(lav_annuo, 5164.57) * aliquota_marginale; 
+        const costo_netto_annuo = lav_annuo - risparmio_irpef_annuo;
+        const versamento_tot_annuo = lav_annuo + az_annuo + tfr_annuo;
+
+        const risparmio_tfr_annuo_stimato = tfr_annuo * (aliquota_tfr_azienda - aliquota_tfr_fondo);
+        const risparmio_tfr_totale = risparmio_tfr_annuo_stimato * anni;
+
+        // 4. Aggiornamento KPIs
+        document.getElementById('out_costo_netto').innerText = formatEur(costo_netto_annuo / 12);
+        document.getElementById('out_versamento_totale').innerText = formatEur(versamento_tot_annuo / 12);
+        document.getElementById('out_risparmio_fiscale').innerText = formatEur(risparmio_irpef_annuo + risparmio_tfr_annuo_stimato);
+
+        // Aggiornamento Box Fiscale
+        document.getElementById('val_irpef_marg').innerText = (aliquota_marginale * 100).toFixed(0);
+        document.getElementById('val_versato_lav').innerText = formatNum(lav_annuo);
+        document.getElementById('val_recupero_irpef').innerText = formatNum(risparmio_irpef_annuo);
+        document.getElementById('val_tfr_az').innerText = (aliquota_tfr_azienda * 100).toFixed(1);
+        document.getElementById('val_tfr_fondo').innerText = (aliquota_tfr_fondo * 100).toFixed(1);
+        document.getElementById('val_risparmio_tfr_tot').innerText = formatNum(risparmio_tfr_totale);
+
+        // 5. Popolamento Tabella Flussi
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td>Trattenuta Lorda Lavoratore</td>
+                <td>${formatEur(lav_annuo/12)}</td>
+                <td>${formatEur(lav_annuo)}</td>
+                <td>${(pct_lav*100).toFixed(2)}%</td>
+            </tr>
+            <tr class="text-success">
+                <td><i class="bi bi-arrow-return-right"></i> Risparmio Fiscale IRPEF</td>
+                <td>${formatEur(risparmio_irpef_annuo/12)}</td>
+                <td>${formatEur(risparmio_irpef_annuo)}</td>
+                <td>${((risparmio_irpef_annuo/ral)*100).toFixed(2)}%</td>
+            </tr>
+            <tr class="table-light fw-bold">
+                <td>Uscita Netta "Di Tasca Mia"</td>
+                <td>${formatEur(costo_netto_annuo/12)}</td>
+                <td>${formatEur(costo_netto_annuo)}</td>
+                <td>${((costo_netto_annuo/ral)*100).toFixed(2)}%</td>
+            </tr>
+            <tr>
+                <td>Contributo Azienda (Gratuito)</td>
+                <td>${formatEur(az_annuo/12)}</td>
+                <td>${formatEur(az_annuo)}</td>
+                <td>${(pct_az*100).toFixed(2)}%</td>
+            </tr>
+            <tr>
+                <td>Quota TFR Conferita</td>
+                <td>${formatEur(tfr_annuo/12)}</td>
+                <td>${formatEur(tfr_annuo)}</td>
+                <td>${((tfr_annuo/ral)*100).toFixed(2)}%</td>
+            </tr>
+            <tr class="table-primary fw-bold text-primary">
+                <td>TOTALE INGRESSO NEL FONDO</td>
+                <td>${formatEur(versamento_tot_annuo/12)}</td>
+                <td>${formatEur(versamento_tot_annuo)}</td>
+                <td>${((versamento_tot_annuo/ral)*100).toFixed(2)}%</td>
+            </tr>
+        `;
+
+        // 6. Calcolo Proiezioni & Grafico
+        document.getElementById('out_anni_grafico').innerText = anni;
+        const rendimenti = [
+            { nome: "Prudente (2%)", rate: 0.02, color: '#198754' },
+            { nome: "Bilanciato (4%)", rate: 0.04, color: '#ffc107' },
+            { nome: "Dinamico (6%)", rate: 0.06, color: '#0d6efd' }
+        ];
+
+        let labels = [];
+        let dataTasca = [];
+        let dataTotVersato = [];
+        let dataPrudente = [];
+        let dataBilanciato = [];
+        let dataDinamico = [];
+
+        let tbodyProj = document.getElementById('projTableBody');
+        tbodyProj.innerHTML = "";
+
+        const vers_mensile = versamento_tot_annuo / 12;
+
+        for (let i = 0; i <= anni; i++) {
+            labels.push(`Anno ${i}`);
+            dataTasca.push(costo_netto_annuo * i);
+            dataTotVersato.push(versamento_tot_annuo * i);
+            
+            if(i === 0) {
+                dataPrudente.push(0); dataBilanciato.push(0); dataDinamico.push(0);
+            } else {
+                let n_mesi = i * 12;
+                dataPrudente.push( vers_mensile * (((1 + (0.02/12))**n_mesi - 1) / (0.02/12)) );
+                dataBilanciato.push( vers_mensile * (((1 + (0.04/12))**n_mesi - 1) / (0.04/12)) );
+                dataDinamico.push( vers_mensile * (((1 + (0.06/12))**n_mesi - 1) / (0.06/12)) );
+            }
+        }
+
+        // Popola Tabella Proiezioni Fine Periodo
+        const tot_tasca = costo_netto_annuo * anni;
+        const tot_vers = versamento_tot_annuo * anni;
+        
+        rendimenti.forEach((r, idx) => {
+            let fv;
+            if(idx === 0) fv = dataPrudente[anni];
+            if(idx === 1) fv = dataBilanciato[anni];
+            if(idx === 2) fv = dataDinamico[anni];
+            
+            tbodyProj.innerHTML += `
+                <tr>
+                    <td class="text-start fw-bold" style="color: ${r.color}">${r.nome}</td>
+                    <td>${formatEur(tot_tasca)}</td>
+                    <td>${formatEur(tot_vers)}</td>
+                    <td class="fw-bold fs-6">${formatEur(fv)}</td>
+                </tr>
+            `;
+        });
+
+        // 7. Render Grafico Chart.js
+        if (chartInstance) { chartInstance.destroy(); }
+        const ctx = document.getElementById('projectionChart').getContext('2d');
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Uscita "Di Tasca Mia"',
+                        data: dataTasca,
+                        borderColor: '#6c757d',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Totale Versato (Lav+Az+TFR)',
+                        data: dataTotVersato,
+                        borderColor: '#000000',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Prudente (2%)',
+                        data: dataPrudente,
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Bilanciato (4%)',
+                        data: dataBilanciato,
+                        borderColor: '#ffc107',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Dinamico (6%)',
+                        data: dataDinamico,
+                        borderColor: '#0d6efd',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) {
+                                    label += formatEur(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { callback: function(value) { return '€ ' + value.toLocaleString('it-IT'); } }
+                    }
+                }
+            }
+        });
+    }
+
+    // Inizializza calcolo all'avvio
+    window.onload = calcolaSimulazione;
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
