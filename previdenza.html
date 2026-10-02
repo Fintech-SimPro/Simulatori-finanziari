@@ -39,6 +39,14 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             background-color: var(--bg-light);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
+        /* Header Bianco con Logo */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
         .card {
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -60,7 +68,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
         .stat-value {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 700;
             color: var(--primary-color);
             margin-top: 8px;
@@ -88,16 +96,55 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             color: var(--success-color);
             font-weight: 600;
         }
+
+        /* Container Grafico Reattivo Mobile */
+        .chart-container {
+            position: relative;
+            height: 380px;
+            width: 100%;
+        }
+        @media (max-width: 576px) {
+            .chart-container {
+                height: 280px;
+            }
+            .stat-value {
+                font-size: 1.15rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold text-primary"><i class="bi bi-shield-check"></i> Previdenza SimPro</h1>
-        <p class="lead text-secondary">Simulatore Avanzato Fondo Pensione Negoziale con Logica Fiscale e CCNL</p>
+<!-- Header con Logo SVG Integrato -->
+<header class="py-3 mb-4">
+    <div class="container text-center">
+        <a href="index.html" class="text-decoration-none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" height="60" style="max-width: 280px;">
+                <defs>
+                    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#0d6efd;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#0a58ca;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#198754;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#20c997;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M 50 25 L 110 25 L 130 80 L 90 135 L 50 135 Z" fill="url(#shieldGrad)" opacity="0.95" />
+                <path d="M 50 25 L 90 25 L 110 80 L 70 135 L 30 80 Z" fill="url(#shieldGrad)" opacity="0.8" />
+                <rect x="52" y="90" width="14" height="30" rx="3" fill="white" opacity="0.9" />
+                <rect x="74" y="70" width="14" height="50" rx="3" fill="white" opacity="0.9" />
+                <rect x="96" y="45" width="14" height="75" rx="3" fill="url(#accentGrad)" />
+                <text x="160" y="75" font-family="'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="800" fill="#2b2d42">SimPro</text>
+                <text x="163" y="105" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#0d6efd" letter-spacing="2">FINANCE &amp; REAL ESTATE</text>
+                <text x="163" y="130" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" fill="#6c757d" letter-spacing="0.5">I tuoi Simulatori Finanziari</text>
+            </svg>
+        </a>
+        <p class="lead text-secondary mt-1 mb-0 fs-6">Simulatore Avanzato Fondo Pensione Negoziale con Logica Fiscale e CCNL</p>
     </div>
+</header>
 
+<div class="container pb-5">
     <div class="row">
         <!-- Colonna Inputs -->
         <div class="col-lg-4 mb-4">
@@ -155,26 +202,29 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         <!-- Colonna Outputs -->
         <div class="col-lg-8">
             <!-- KPIs -->
-            <div class="row mb-4">
-                <div class="col-md-4 mb-3 mb-md-0">
+            <div class="row mb-4 g-3">
+                <div class="col-6 col-md-4">
                     <div class="stat-card">
-                        <i class="bi bi-wallet2 text-secondary fs-2"></i>
-                        <div class="stat-label mt-2">Costo Netto Mensile (Tasca Mia)</div>
+                        <i class="bi bi-wallet2 text-secondary fs-3"></i>
+                        <div class="stat-label mt-1">Costo Netto Mensile</div>
                         <div class="stat-value" id="out_costo_netto">€ 0,00</div>
+                        <small class="text-muted" style="font-size:0.75rem;">(Di tasca mia)</small>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3 mb-md-0">
+                <div class="col-6 col-md-4">
                     <div class="stat-card">
-                        <i class="bi bi-piggy-bank text-primary fs-2"></i>
-                        <div class="stat-label mt-2">Versamento Mensile nel Fondo</div>
+                        <i class="bi bi-piggy-bank text-primary fs-3"></i>
+                        <div class="stat-label mt-1">Versamento Fondo / Mese</div>
                         <div class="stat-value" id="out_versamento_totale">€ 0,00</div>
+                        <small class="text-muted" style="font-size:0.75rem;">(Lav + Az + TFR)</small>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-12 col-md-4">
                     <div class="stat-card border-success border">
-                        <i class="bi bi-cash-coin text-success fs-2"></i>
-                        <div class="stat-label mt-2">Risparmio Fiscale (IRPEF + TFR) / Anno</div>
+                        <i class="bi bi-cash-coin text-success fs-3"></i>
+                        <div class="stat-label mt-1">Risparmio Fiscale / Anno</div>
                         <div class="stat-value text-success" id="out_risparmio_fiscale">€ 0,00</div>
+                        <small class="text-muted" style="font-size:0.75rem;">(IRPEF + TFR)</small>
                     </div>
                 </div>
             </div>
@@ -222,7 +272,9 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     <span><i class="bi bi-graph-up"></i> Proiezione Accumulo a <span id="out_anni_grafico">30</span> anni</span>
                 </div>
                 <div class="card-body">
-                    <canvas id="projectionChart" height="120"></canvas>
+                    <div class="chart-container">
+                        <canvas id="projectionChart"></canvas>
+                    </div>
                     
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered table-sm text-center align-middle">
@@ -230,14 +282,106 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                                 <tr>
                                     <th class="text-start">Comparto</th>
                                     <th>Costo "Tasca Mia" Totale</th>
-                                    <th>Versato Totale (Lav+Az+TFR)</th>
-                                    <th>Montante Finale Stimato</th>
+                                    <th>Versato Totale</th>
+                                    <th>Montante Stimato</th>
+                                    <th>Pensione Integrativa/Mese (67 anni)*</th>
                                 </tr>
                             </thead>
                             <tbody id="projTableBody">
                                 <!-- Popolato via JS -->
                             </tbody>
                         </table>
+                        <small class="text-muted fs-7 d-block text-end">*Stima della rendita integrativa mensile basata su coefficiente medio di conversione all'età di 67 anni.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEZIONE INFORMATIVA REGOLE D'ACCESSO E LIQUIDAZIONE -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-white text-dark fw-bold fs-5 border-bottom py-3">
+                    <i class="bi bi-book text-primary me-2"></i> Guida Completa: Come e Quando Avere Accesso al Capitale
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <!-- 1. Anticipazioni -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="p-3 border rounded-3 h-100 bg-light">
+                                <h6 class="fw-bold text-primary mb-3"><i class="bi bi-cash-stack me-1"></i> 1. Anticipazioni (Prima della Pensione)</h6>
+                                <ul class="list-unstyled small text-secondary mb-0">
+                                    <li class="mb-2">
+                                        <strong class="text-dark">Spese Sanitarie Straordinarie:</strong><br>
+                                        • Requisito: Subito (0 anni di anzianità)<br>
+                                        • Importo: Fino al <strong>75%</strong> del capitale<br>
+                                        • Tassazione agevolata: <strong>da 15% a 9%</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-dark">Acquisto / Ristrutturazione 1° Casa:</strong><br>
+                                        • Requisito: Almeno <strong>8 anni</strong> nel fondo<br>
+                                        • Importo: Fino al <strong>75%</strong> del capitale<br>
+                                        • Tassazione: <strong>23%</strong>
+                                    </li>
+                                    <li>
+                                        <strong class="text-dark">Ulteriori Esigenze Personali:</strong><br>
+                                        • Requisito: Almeno <strong>8 anni</strong> nel fondo<br>
+                                        • Importo: Fino al <strong>30%</strong> del capitale<br>
+                                        • Tassazione: <strong>23%</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 2. Riscatti -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="p-3 border rounded-3 h-100 bg-light">
+                                <h6 class="fw-bold text-warning text-darken-2 mb-3"><i class="bi bi-briefcase me-1"></i> 2. Riscatti per Cambio Lavoro o Crisi</h6>
+                                <ul class="list-unstyled small text-secondary mb-0">
+                                    <li class="mb-2">
+                                        <strong class="text-dark">Cambio/Perdita Lavoro o CCNL:</strong><br>
+                                        • Requisito: Perdita dei requisiti di partecipazione<br>
+                                        • Importo: <strong>100%</strong> del capitale accumulato<br>
+                                        • Tassazione: <strong>23%</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-dark">Inoccupazione (12 - 48 mesi):</strong><br>
+                                        • Requisito: Cassa Integrazione o Mobilità<br>
+                                        • Importo: Riscatto Parziale fino al <strong>50%</strong><br>
+                                        • Tassazione agevolata: <strong>da 15% a 9%</strong>
+                                    </li>
+                                    <li>
+                                        <strong class="text-dark">Inoccupazione > 48 mesi / Invalidità:</strong><br>
+                                        • Requisito: Inoccupazione prolungata o invalidità<br>
+                                        • Importo: Riscatto Totale <strong>100%</strong><br>
+                                        • Tassazione agevolata: <strong>da 15% a 9%</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 3. Pensionamento e Rendita -->
+                        <div class="col-md-12 col-lg-4">
+                            <div class="p-3 border rounded-3 h-100 bg-light">
+                                <h6 class="fw-bold text-success mb-3"><i class="bi bi-person-check me-1"></i> 3. Liquidazione all'Età Pensionabile</h6>
+                                <p class="small text-secondary mb-2">Al raggiungimento dei requisiti pensionistici di legge, puoi richiedere le tue prestazioni:</p>
+                                <ul class="list-unstyled small text-secondary mb-0">
+                                    <li class="mb-2">
+                                        <strong class="text-dark">Regola Standard (Capitale + Rendita):</strong><br>
+                                        Puoi ritirare fino al <strong>50% in capitale unico</strong> (tassato tra il 9% e il 15%), mentre il restante 50% viene erogato come <strong>Rendita Vitalizia Mensile</strong>.
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-dark">Eccezione Ritiro 100% in Capitale:</strong><br>
+                                        Se convertendo il 70% del montante finale in rendita, l'importo risulta inferiore al 50% dell'Assegno Sociale INPS, puoi ritirare il <strong>100% in contanti subito</strong>.
+                                    </li>
+                                    <li>
+                                        <strong class="text-dark">R.I.T.A. (Rendita Integrativa Temporanea):</strong><br>
+                                        In caso di cessazione dell'attività fino a 5-10 anni prima dell'età pensionabile, puoi erogare il capitale sotto forma di rendita ponte fino alla pensione.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -418,27 +562,34 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             }
         }
 
-        // Popola Tabella Proiezioni
+        // Popola Tabella Proiezioni con Rendita Integrativa
         const tot_tasca = costo_netto_annuo * anni;
         const tot_vers = versamento_tot_annuo * anni;
         
+        // Coefficiente medio di conversione in rendita per età 67 anni (~4.5% annuo)
+        const ANNUITY_COEFF = 0.045;
+
         rendimenti.forEach((r, idx) => {
             let fv = 0;
             if(idx === 0) fv = dataPrudente[anni];
             if(idx === 1) fv = dataBilanciato[anni];
             if(idx === 2) fv = dataDinamico[anni];
             
+            // Stima pensione mensile aggiuntiva
+            let rendita_mensile = (fv * ANNUITY_COEFF) / 12;
+
             tbodyProj.innerHTML += `
                 <tr>
                     <td class="text-start fw-bold" style="color: ${r.color}">${r.nome}</td>
                     <td>${formatEur(tot_tasca)}</td>
                     <td>${formatEur(tot_vers)}</td>
-                    <td class="fw-bold fs-6">${formatEur(fv)}</td>
+                    <td class="fw-bold">${formatEur(fv)}</td>
+                    <td class="fw-bold text-success">+${formatEur(rendita_mensile)} / mese</td>
                 </tr>
             `;
         });
 
-        // 7. Render Grafico
+        // 7. Render Grafico Reattivo Mobile
         if (chartInstance) { chartInstance.destroy(); }
         const ctx = document.getElementById('projectionChart').getContext('2d');
         chartInstance = new Chart(ctx, {
@@ -456,7 +607,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                         pointRadius: 0
                     },
                     {
-                        label: 'Totale Versato (Lav+Az+TFR)',
+                        label: 'Totale Versato',
                         data: dataTotVersato,
                         borderColor: '#000000',
                         borderWidth: 2,
@@ -492,6 +643,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
                     tooltip: {
@@ -505,11 +657,31 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                                 return label;
                             }
                         }
+                    },
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            boxWidth: 10,
+                            font: { size: 11 }
+                        }
                     }
                 },
                 scales: {
+                    x: {
+                        ticks: {
+                            maxTicksLimit: 8,
+                            font: { size: 10 }
+                        }
+                    },
                     y: {
-                        ticks: { callback: function(value) { return '€ ' + value.toLocaleString('it-IT'); } }
+                        ticks: {
+                            font: { size: 10 },
+                            callback: function(value) {
+                                if (value >= 1000000) return '€ ' + (value / 1000000).toFixed(1) + 'M';
+                                if (value >= 1000) return '€ ' + (value / 1000).toFixed(0) + 'k';
+                                return '€ ' + value;
+                            }
+                        }
                     }
                 }
             }
