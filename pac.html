@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulatore PAC ETF & Interesse Composto</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: #334155;
+            padding-bottom: 3rem;
+        }
+
+        .navbar-custom {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            background-color: var(--card-bg);
+            transition: transform 0.2s;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.25rem 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-range::-webkit-slider-thumb {
+            background: var(--accent-color);
+        }
+
+        .form-range::-moz-range-thumb {
+            background: var(--accent-color);
+        }
+
+        .kpi-box {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .kpi-title {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .kpi-primary { background-color: #eff6ff; color: #1e3a8a; }
+        .kpi-success { background-color: #ecfdf5; color: #065f46; }
+        .kpi-danger { background-color: #fef2f2; color: #991b1b; }
+        .kpi-accent { background-color: #f0f9ff; color: #0369a1; border-left: 4px solid var(--accent-color); }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+
+        .info-section {
+            background-color: #f1f5f9;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .sync-input {
+            width: 90px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        /* Slider container to align slider and input */
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .slider-group input[type="range"] {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-custom py-3 mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1 fs-4 fw-bold">
+                <i class="bi bi-graph-up-arrow me-2 text-primary"></i>
+                PAC & Interesse Composto
+            </span>
+            <span class="text-light opacity-75 d-none d-md-block">Simulatore ETF Azionario</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row g-4">
+            
+            <!-- Sidebar: Inputs -->
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="bi bi-sliders me-2 fs-5"></i>
+                        Parametri di Investimento
+                    </div>
+                    <div class="card-body">
+                        
+                        <!-- Capitale Iniziale -->
+                        <div class="mb-4">
+                            <label class="form-label fw-medium d-flex justify-content-between">
+                                <span>Capitale Iniziale (€)</span>
+                            </label>
+                            <div class="slider-group">
+                                <input type="range" class="form-range" id="sliderInit" min="0" max="100000" step="1000" value="10000">
+                                <input type="number" class="form-control form-control-sm sync-input" id="numInit" min="0" max="100000" step="1000" value="10000">
+                            </div>
+                        </div>
+
+                        <!-- PAC Mensile -->
+                        <div class="mb-4">
+                            <label class="form-label fw-medium d-flex justify-content-between">
+                                <span>Versamento Mensile PAC (€)</span>
+                            </label>
+                            <div class="slider-group">
+                                <input type="range" class="form-range" id="sliderPac" min="0" max="5000" step="50" value="300">
+                                <input type="number" class="form-control form-control-sm sync-input" id="numPac" min="0" max="5000" step="50" value="300">
+                            </div>
+                        </div>
+
+                        <!-- Rendimento Annuo -->
+                        <div class="mb-4">
+                            <label class="form-label fw-medium d-flex justify-content-between">
+                                <span>Rendimento Lordo Annuo (%)</span>
+                            </label>
+                            <div class="slider-group">
+                                <input type="range" class="form-range" id="sliderYield" min="1" max="15" step="0.5" value="8.0">
+                                <input type="number" class="form-control form-control-sm sync-input" id="numYield" min="1" max="15" step="0.1" value="8.0">
+                            </div>
+                            <small class="text-muted" style="font-size: 0.75rem;">Stima storica S&P 500 / MSCI World: ~8-10%</small>
+                        </div>
+
+                        <!-- Orizzonte Temporale -->
+                        <div class="mb-4">
+                            <label class="form-label fw-medium d-flex justify-content-between">
+                                <span>Orizzonte Temporale (Anni)</span>
+                            </label>
+                            <div class="slider-group">
+                                <input type="range" class="form-range" id="sliderYears" min="1" max="40" step="1" value="20">
+                                <input type="number" class="form-control form-control-sm sync-input" id="numYears" min="1" max="40" step="1" value="20">
+                            </div>
+                        </div>
+
+                        <!-- TER (Costi Fondo) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-medium d-flex justify-content-between">
+                                <span>Costo Annuo ETF (TER %)</span>
+                            </label>
+                            <div class="slider-group">
+                                <input type="range" class="form-range" id="sliderTer" min="0" max="2" step="0.01" value="0.15">
+                                <input type="number" class="form-control form-control-sm sync-input" id="numTer" min="0" max="2" step="0.01" value="0.15">
+                            </div>
+                            <small class="text-muted" style="font-size: 0.75rem;">Verrà sottratto dal rendimento lordo annuo.</small>
+                        </div>
+
+                        <!-- Tassazione -->
+                        <div class="mb-2">
+                            <label class="form-label fw-medium text-muted">Aliquota Fiscale Plusvalenze (Fissa)</label>
+                            <input type="text" class="form-control text-muted bg-light" value="26% (Standard Azionario)" readonly>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content: KPIs & Chart -->
+            <div class="col-lg-8">
+                
+                <!-- KPIs Row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="kpi-box kpi-primary border">
+                            <div class="kpi-title"><i class="bi bi-piggy-bank"></i> Tot. Versato</div>
+                            <div class="kpi-value text-dark" id="kpiVersato">€ 0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="kpi-box kpi-accent border">
+                            <div class="kpi-title"><i class="bi bi-graph-up"></i> Valore Lordo</div>
+                            <div class="kpi-value" id="kpiLordo">€ 0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="kpi-box kpi-danger border">
+                            <div class="kpi-title"><i class="bi bi-bank"></i> Tasse (26%)</div>
+                            <div class="kpi-value" id="kpiTasse">€ 0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="kpi-box kpi-success border">
+                            <div class="kpi-title"><i class="bi bi-check-circle"></i> Valore Netto</div>
+                            <div class="kpi-value" id="kpiNetto">€ 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Card -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-bar-chart-fill me-2 fs-5"></i> Proiezione Accumulo nel Tempo</span>
+                        <span class="badge bg-primary rounded-pill">Net Annual Yield: <span id="badgeNetYield">0</span>%</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="growthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Educational Section -->
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card h-100 mb-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary fw-bold"><i class="bi bi-arrow-repeat"></i> Il Potere del "Tax Deferral"</h5>
+                                <p class="card-text text-muted small mt-3">
+                                    Gli ETF ad <strong>Accumulazione (Acc)</strong> non distribuiscono dividendi, ma li reinvestono automaticamente nel fondo. 
+                                    Questo genera una straordinaria efficienza fiscale: le tasse (26%) <strong>non vengono pagate anno per anno</strong> sui guadagni, 
+                                    ma vengono applicate solo alla fine dell'orizzonte temporale sulla plusvalenza totale maturata.
+                                </p>
+                                <p class="card-text text-muted small mb-0">
+                                    Il capitale che altrimenti verrebbe eroso dalle tasse annuali continua a generare <strong>interesse composto</strong> (rendimento sul rendimento), 
+                                    amplificando notevolmente il montante finale rispetto a strumenti a distribuzione.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 mb-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-success fw-bold"><i class="bi bi-calendar-check"></i> Dollar Cost Averaging (PAC)</h5>
+                                <p class="card-text text-muted small mt-3">
+                                    Il <strong>Piano di Accumulo del Capitale (PAC)</strong> consiste nell'investire una cifra fissa a intervalli regolari (es. mensilmente).
+                                    Questa strategia, nota come <em>Dollar Cost Averaging</em>, riduce drasticamente il rischio legato al <em>market timing</em> (cercare il momento "perfetto" per investire).
+                                </p>
+                                <p class="card-text text-muted small mb-0">
+                                    Acquistando costantemente, medierai il prezzo di carico: comprerai meno quote quando i mercati sono ai massimi e <strong>più quote quando i mercati scendono</strong>. 
+                                    Questo abbassa la volatilità del portafoglio e trasforma le crisi di mercato in preziose opportunità d'acquisto.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Utilities for formatting currency
+        const formatCurrency = (val) => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+        const TAX_RATE = 0.26;
+
+        let myChart = null;
+
+        // Sync Sliders and Number Inputs
+        function setupSync(sliderId, numId) {
+            const slider = document.getElementById(sliderId);
+            const num = document.getElementById(numId);
+            
+            slider.addEventListener('input', () => {
+                num.value = slider.value;
+                calculateAndRender();
+            });
+            
+            num.addEventListener('input', () => {
+                // Ensure value is within bounds
+                let val = parseFloat(num.value);
+                const min = parseFloat(slider.min);
+                const max = parseFloat(slider.max);
+                
+                if (val < min) val = min;
+                if (val > max) val = max;
+                if (!isNaN(val)) {
+                    slider.value = val;
+                    calculateAndRender();
+                }
+            });
+        }
+
+        setupSync('sliderInit', 'numInit');
+        setupSync('sliderPac', 'numPac');
+        setupSync('sliderYield', 'numYield');
+        setupSync('sliderYears', 'numYears');
+        setupSync('sliderTer', 'numTer');
+
+        function calculateAndRender() {
+            // Get values
+            const initialCapital = parseFloat(document.getElementById('numInit').value) || 0;
+            const monthlyPac = parseFloat(document.getElementById('numPac').value) || 0;
+            const grossAnnualYield = parseFloat(document.getElementById('numYield').value) || 0;
+            const ter = parseFloat(document.getElementById('numTer').value) || 0;
+            const years = parseInt(document.getElementById('numYears').value) || 1;
+
+            // Math
+            const netAnnualRate = (grossAnnualYield - ter) / 100;
+            // Compound monthly rate
+            const monthlyRate = netAnnualRate / 12;
+
+            document.getElementById('badgeNetYield').innerText = (grossAnnualYield - ter).toFixed(2);
+
+            let labels = [];
+            let dataVersato = [];
+            let dataLordo = [];
+            let dataNetto = [];
+
+            let totalVersato = initialCapital;
+            let currentLordo = initialCapital;
+
+            // Compute year by year for the chart
+            for (let y = 0; y <= years; y++) {
+                labels.push(`Anno ${y}`);
+                
+                if (y === 0) {
+                    dataVersato.push(initialCapital);
+                    dataLordo.push(initialCapital);
+                    dataNetto.push(initialCapital);
+                } else {
+                    // Iterate months for this year
+                    for (let m = 1; m <= 12; m++) {
+                        totalVersato += monthlyPac;
+                        // Compound interest for the month + new PAC deposit at end of month
+                        currentLordo = (currentLordo * (1 + monthlyRate)) + monthlyPac;
+                    }
+
+                    // Calculate hypothetical Net Value at this year if liquidated
+                    let currentPlusvalenza = currentLordo - totalVersato;
+                    if (currentPlusvalenza < 0) currentPlusvalenza = 0; // No taxes on losses
+                    
+                    let currentTasse = currentPlusvalenza * TAX_RATE;
+                    let currentNetto = currentLordo - currentTasse;
+
+                    dataVersato.push(totalVersato);
+                    dataLordo.push(currentLordo);
+                    dataNetto.push(currentNetto);
+                }
+            }
+
+            // Final KPI Values
+            const finalVersato = dataVersato[years];
+            const finalLordo = dataLordo[years];
+            
+            let finalPlusvalenza = finalLordo - finalVersato;
+            if (finalPlusvalenza < 0) finalPlusvalenza = 0;
+            
+            const finalTasse = finalPlusvalenza * TAX_RATE;
+            const finalNetto = finalLordo - finalTasse;
+
+            // Update DOM KPIs
+            document.getElementById('kpiVersato').innerText = formatCurrency(finalVersato);
+            document.getElementById('kpiLordo').innerText = formatCurrency(finalLordo);
+            document.getElementById('kpiTasse').innerText = formatCurrency(finalTasse);
+            document.getElementById('kpiNetto').innerText = formatCurrency(finalNetto);
+
+            // Render Chart
+            renderChart(labels, dataVersato, dataLordo, dataNetto);
+        }
+
+        function renderChart(labels, dataVersato, dataLordo, dataNetto) {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+            
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Capitale Versato (€)',
+                            data: dataVersato,
+                            borderColor: '#64748b',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            fill: false,
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Valore Lordo (€)',
+                            data: dataLordo,
+                            borderColor: '#0ea5e9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Valore Netto Stimato (€)',
+                            data: dataNetto,
+                            borderColor: '#10b981',
+                            backgroundColor: 'transparent',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            pointHoverRadius: 6,
+                            fill: false,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 8
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f1f5f9'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    if (value >= 1000000) return '€ ' + (value / 1000000).toFixed(1) + 'M';
+                                    if (value >= 1000) return '€ ' + (value / 1000).toFixed(0) + 'k';
+                                    return '€ ' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize on load
+        window.onload = () => {
+            calculateAndRender();
+        };
+    </script>
+</body>
+</html>
