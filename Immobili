@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Pro - Simulatore Acquisto Casa</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+            --wants: #7209b7;
+            --bg-light: #f8f9fa;
+        }
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: none;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: white;
+            border-bottom: 2px solid var(--bg-light);
+            font-weight: 600;
+            border-radius: 12px 12px 0 0 !important;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #eee;
+        }
+        .title-primary { color: var(--primary); border-bottom-color: var(--primary); }
+        .title-wants { color: var(--wants); border-bottom-color: var(--wants); }
+        
+        .input-group-text { background-color: white; color: #6c757d; }
+        .form-control:focus, .form-select:focus { box-shadow: none; border-color: var(--primary); }
+        
+        .summary-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-success { background-color: rgba(25, 135, 84, 0.1); border-left: 5px solid var(--success-color); }
+        .summary-danger { background-color: rgba(220, 53, 69, 0.1); border-left: 5px solid var(--danger-color); }
+        .summary-info { background-color: rgba(13, 202, 240, 0.1); border-left: 5px solid var(--info-color); }
+        
+        .advice-box {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .good-box {
+            background-color: #d1e7dd;
+            border-left: 5px solid #198754;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .stat-label { font-size: 0.85rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold" style="color: var(--primary);"><i class="bi bi-house-check"></i> Real Estate Pro</h1>
+        <p class="lead text-secondary">Simulatore Acquisto Casa: Bilancio Mutuo vs Affitto Evitato e Stima Valore Futuro</p>
+    </div>
+
+    <!-- KPI Header -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-primary border-2">
+                <div class="card-body text-center">
+                    <div class="stat-label">Rata Mutuo Stimata</div>
+                    <div class="stat-value text-primary" id="out_rata">€ 0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-danger border-2">
+                <div class="card-body text-center">
+                    <div class="stat-label">Costi Iniziali (Tasse/Notaio)</div>
+                    <div class="stat-value text-danger" id="out_costi_iniziali">€ 0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 border-success border-2 bg-success text-white bg-opacity-10">
+                <div class="card-body text-center">
+                    <div class="stat-label text-success">Valore Stimato Immobile a Fine Mutuo</div>
+                    <div class="stat-value text-success fs-2" id="out_valore_futuro">€ 0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Colonna Inputs -->
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header text-primary">
+                    <i class="bi bi-sliders"></i> Parametri di Acquisto
+                </div>
+                <div class="card-body">
+                    
+                    <h5 class="section-title title-primary"><i class="bi bi-cash-stack"></i> Finanze Iniziali</h5>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Liquidità Disponibile</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">€</span>
+                                <input type="number" class="form-control fw-bold text-primary" id="in_liquidita" value="100000" oninput="calcola()">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Affitto Mensile Evitato</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">€</span>
+                                <input type="number" class="form-control text-danger fw-bold" id="in_affitto" value="1500" oninput="calcola()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="section-title title-wants mt-4"><i class="bi bi-building"></i> L'Immobile</h5>
+                    <div class="row mb-3">
+                        <div class="col-12 mb-2">
+                            <label class="form-label small fw-bold">Città / Zona</label>
+                            <select class="form-select form-select-sm" id="in_citta" onchange="aggiornaCitta()">
+                                <option value="Milano">Milano</option>
+                                <option value="Roma">Roma</option>
+                                <option value="Bologna">Bologna</option>
+                                <option value="Firenze">Firenze</option>
+                                <option value="Napoli">Napoli</option>
+                                <option value="Torino">Torino</option>
+                                <option value="Genova">Genova</option>
+                                <option value="Palermo">Palermo</option>
+                                <option value="Venezia">Venezia</option>
+                                <option value="Provincia Nord">Provincia Nord (Generica)</option>
+                                <option value="Provincia Centro">Provincia Centro (Generica)</option>
+                                <option value="Provincia Sud">Provincia Sud (Generica)</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label class="form-label small fw-bold">Prezzo Casa (Richiesto)</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">€</span>
+                                <input type="number" class="form-control" id="in_prezzo" value="500000" oninput="calcola()">
+                            </div>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label class="form-label small fw-bold">Superficie</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="in_mq" value="100" oninput="calcola()">
+                                <span class="input-group-text">mq</span>
+                            </div>
+                        </div>
+                        <div class="col-12 text-end">
+                            <small class="text-muted" id="info_citta">Prezzo medio: 5.200 €/mq | Apprezzamento annuo storico: +2.0%</small>
+                        </div>
+                    </div>
+
+                    <h5 class="section-title title-primary mt-4"><i class="bi bi-bank"></i> Dettagli Mutuo</h5>
+                    <div class="row mb-3">
+                        <div class="col-4 mb-2">
+                            <label class="form-label small fw-bold">Anticipo</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="in_anticipo" value="20" oninput="calcola()">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-4 mb-2">
+                            <label class="form-label small fw-bold">Durata</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="in_durata" value="30" oninput="calcola()">
+                                <span class="input-group-text">Anni</span>
+                            </div>
+                        </div>
+                        <div class="col-4 mb-2">
+                            <label class="form-label small fw-bold">Tasso (TAN)</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="in_tasso" value="3.5" step="0.1" oninput="calcola()">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Colonna Grafici & Risultati -->
+        <div class="col-lg-7">
+            <div class="card h-100">
+                <div class="card-header text-primary">
+                    <i class="bi bi-bar-chart-fill"></i> Bilancio a Fine Mutuo (<span id="out_durata_titolo">30</span> Anni)
+                </div>
+                <div class="card-body">
+                    
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="balanceChart"></canvas>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6 class="fw-bold mb-3">Analisi Finanziaria Semplificata:</h6>
+                        
+                        <div class="summary-box summary-danger">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <strong><i class="bi bi-arrow-down-circle text-danger"></i> Uscite Effettive per l'Acquisto</strong>
+                                    <strong class="text-danger" id="out_totale_uscite">€ 0</strong>
+                                </div>
+                                <small class="text-muted">Somma di Anticipo, Costi iniziali (Agenzia 3%, Notaio, Imposte stimate 4%) e totale delle rate del mutuo (Capitale + Interessi).</small>
+                            </div>
+                        </div>
+
+                        <div class="summary-box summary-info">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <strong><i class="bi bi-shield-check text-info"></i> Risparmio Affitto Evitato</strong>
+                                    <strong class="text-info" id="out_totale_affitto">€ 0</strong>
+                                </div>
+                                <small class="text-muted">I soldi che non hai buttato in affitto durante gli anni del mutuo.</small>
+                            </div>
+                        </div>
+
+                        <div class="summary-box summary-success">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <strong><i class="bi bi-house-up text-success"></i> Valore Finale dell'Immobile</strong>
+                                    <strong class="text-success" id="out_valore_finale_box">€ 0</strong>
+                                </div>
+                                <small class="text-muted">Valore di realizzo stimato della casa tra <span class="durata_text">30</span> anni, basato sulla storicità immobiliare di <strong id="out_nome_citta">Milano</strong>.</small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="feedback_box" class="mt-3">
+                        <!-- Consigli e alert iniettati via JS -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Database semplificato delle città italiane (Prezzi medi/mq e rivalutazione annua storica stimata)
+    const dbCitta = {
+        "Milano": { prezzo_mq: 5200, app_annuo: 0.020 },
+        "Roma": { prezzo_mq: 3300, app_annuo: 0.010 },
+        "Bologna": { prezzo_mq: 3400, app_annuo: 0.015 },
+        "Firenze": { prezzo_mq: 4100, app_annuo: 0.015 },
+        "Torino": { prezzo_mq: 1900, app_annuo: 0.005 },
+        "Napoli": { prezzo_mq: 2700, app_annuo: 0.010 },
+        "Venezia": { prezzo_mq: 3100, app_annuo: 0.010 },
+        "Genova": { prezzo_mq: 1600, app_annuo: 0.005 },
+        "Palermo": { prezzo_mq: 1300, app_annuo: 0.005 },
+        "Provincia Nord": { prezzo_mq: 1800, app_annuo: 0.010 },
+        "Provincia Centro": { prezzo_mq: 1500, app_annuo: 0.005 },
+        "Provincia Sud": { prezzo_mq: 1200, app_annuo: 0.005 }
+    };
+
+    let chartInstance = null;
+
+    const formatEur = (num) => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(num);
+
+    function aggiornaCitta() {
+        const citta = document.getElementById('in_citta').value;
+        const dati = dbCitta[citta];
+        const mq = parseFloat(document.getElementById('in_mq').value) || 100;
+        
+        // Suggerisci prezzo casa in base alla città e mq
+        document.getElementById('in_prezzo').value = Math.round(dati.prezzo_mq * mq);
+        
+        document.getElementById('info_citta').innerHTML = `Prezzo medio: ${formatEur(dati.prezzo_mq)}/mq | Apprezzamento annuo storico: +${(dati.app_annuo*100).toFixed(1)}%`;
+        calcola();
+    }
+
+    function PMT(rate_per_period, number_of_payments, present_value) {
+        if (rate_per_period === 0) return present_value / number_of_payments;
+        return present_value * rate_per_period * (Math.pow(1 + rate_per_period, number_of_payments)) / (Math.pow(1 + rate_per_period, number_of_payments) - 1);
+    }
+
+    function calcola() {
+        // Lettura Input
+        const liquidita = parseFloat(document.getElementById('in_liquidita').value) || 0;
+        const prezzo_casa = parseFloat(document.getElementById('in_prezzo').value) || 0;
+        const affitto_evitato = parseFloat(document.getElementById('in_affitto').value) || 0;
+        const anticipo_pct = parseFloat(document.getElementById('in_anticipo').value) || 0;
+        const durata_anni = parseInt(document.getElementById('in_durata').value) || 30;
+        const tasso_annuo = parseFloat(document.getElementById('in_tasso').value) || 0;
+        
+        const cittaSelezionata = document.getElementById('in_citta').value;
+        const tasso_apprezzamento = dbCitta[cittaSelezionata].app_annuo;
+
+        // 1. Calcoli Iniziali e Mutuo
+        const anticipo_euro = prezzo_casa * (anticipo_pct / 100);
+        const importo_mutuo = prezzo_casa - anticipo_euro;
+        
+        // Stima costi accessori (Agenzia ~3%, Notaio ~2.5k, Imposte varie). Semplifichiamo a ~7% sul prezzo per la prima casa
+        const costi_accessori = prezzo_casa * 0.07;
+        const cash_out_iniziale = anticipo_euro + costi_accessori;
+        const liquidita_residua = liquidita - cash_out_iniziale;
+
+        // Calcolo Rata Mensile
+        const tasso_mensile = (tasso_annuo / 100) / 12;
+        const numero_rate = durata_anni * 12;
+        const rata_mensile = PMT(tasso_mensile, numero_rate, importo_mutuo);
+        const totale_mutuo_pagato = rata_mensile * numero_rate;
+        const interessi_totali = totale_mutuo_pagato - importo_mutuo;
+
+        // 2. Calcoli a Lungo Termine
+        const totale_affitto_evitato = affitto_evitato * 12 * durata_anni;
+        const totale_uscite_acquisto = anticipo_euro + costi_accessori + totale_mutuo_pagato;
+        
+        // Valore futuro immobile (interesse composto sull'apprezzamento storico)
+        const valore_futuro_casa = prezzo_casa * Math.pow((1 + tasso_apprezzamento), durata_anni);
+
+        // 3. Aggiornamento UI
+        document.getElementById('out_rata').innerText = formatEur(rata_mensile);
+        document.getElementById('out_costi_iniziali').innerText = formatEur(costi_accessori);
+        document.getElementById('out_valore_futuro').innerText = formatEur(valore_futuro_casa);
+        
+        document.getElementById('out_durata_titolo').innerText = durata_anni;
+        document.querySelectorAll('.durata_text').forEach(e => e.innerText = durata_anni);
+        document.getElementById('out_nome_citta').innerText = cittaSelezionata;
+
+        document.getElementById('out_totale_uscite').innerText = formatEur(totale_uscite_acquisto);
+        document.getElementById('out_totale_affitto').innerText = formatEur(totale_affitto_evitato);
+        document.getElementById('out_valore_finale_box').innerText = formatEur(valore_futuro_casa);
+
+        // 4. Feedback & Alert
+        let feedbackHTML = '';
+        if (liquidita_residua < 0) {
+            feedbackHTML = `<div class="advice-box border-danger bg-danger text-white bg-opacity-10 text-dark">
+                <strong><i class="bi bi-exclamation-triangle-fill"></i> Liquidità Insufficiente!</strong><br>
+                Ti mancano <b>${formatEur(Math.abs(liquidita_residua))}</b> per coprire l'anticipo e i costi accessori (agenzia, notaio, tasse). Devi aumentare la liquidità o diminuire l'anticipo.
+            </div>`;
+        } else if (rata_mensile > 1500) { // Regola spannometrica se non sappiamo il reddito
+             feedbackHTML = `<div class="advice-box">
+                <strong><i class="bi bi-info-circle-fill"></i> Nota sulla Rata:</strong>
+                La rata stimata è di ${formatEur(rata_mensile)} al mese. Assicurati che non superi il 30-33% del tuo stipendio netto mensile.
+            </div>`;
+        } else {
+             feedbackHTML = `<div class="good-box">
+                <strong><i class="bi bi-check-circle-fill"></i> Operazione Sostenibile</strong><br>
+                Hai liquidità sufficiente per l'ingresso (ti resteranno ${formatEur(liquidita_residua)} come fondo emergenza) e a fine mutuo avrai un asset di grande valore invece di aver speso ${formatEur(totale_affitto_evitato)} in affitto a fondo perduto.
+            </div>`;
+        }
+        document.getElementById('feedback_box').innerHTML = feedbackHTML;
+
+        // 5. Aggiornamento Grafico a Barre
+        if (chartInstance) { chartInstance.destroy(); }
+        const ctx = document.getElementById('balanceChart').getContext('2d');
+        
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Uscite Acquisto (Mutuo+Anticipo)', 'Affitto Risparmiato', 'Valore Casa a Fine Mutuo'],
+                datasets: [{
+                    data: [totale_uscite_acquisto, totale_affitto_evitato, valore_futuro_casa],
+                    backgroundColor: [
+                        'rgba(220, 53, 69, 0.7)', // Red per uscite
+                        'rgba(13, 202, 240, 0.7)', // Info per affitto
+                        'rgba(25, 135, 84, 0.7)'  // Green per casa
+                    ],
+                    borderColor: [
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(13, 202, 240, 1)',
+                        'rgba(25, 135, 84, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) { return formatEur(context.raw); }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) { return '€ ' + (value/1000) + 'k'; }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Inizializza
+    window.onload = () => {
+        calcola();
+    };
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
