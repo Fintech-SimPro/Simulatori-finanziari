@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pianificazione Finanziaria &amp; Educazione Patrimoniale</title>
+  <meta name="description" content="Guida ed educazione alla gestione delle finanze personali: simulatori PAC, ottimizzazione fondi pensione, analisi immobiliare e gestione liquidità.">
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #334155;
+      --text-dark: #0f172a;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .intro-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .card h3 {
+      color: var(--text-dark);
+      font-size: 1.25rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #64748b;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: var(--accent);
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      transition: background 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #1d4ed8;
+    }
+
+    footer {
+      max-width: 1100px;
+      margin: 3rem auto 2rem auto;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: #94a3b8;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Pianificazione Finanziaria Indipendente</h1>
+    <p>Strumenti didattici, calcolatori e modelli pratici per ottimizzare la gestione del tuo patrimonio, la previdenza e gli investimenti.</p>
+  </header>
+
+  <main>
+    <section class="intro-box">
+      <h2>Benvenuto sulla piattaforma</h2>
+      <p>Utilizza i simulatori gratuiti qui sotto per analizzare l'efficienza fiscale, la crescita dei tuoi capitali e la sostenibilità dei tuoi progetti di vita.</p>
+    </section>
+
+    <div class="grid">
+      <!-- 1. PAC & Accumulo -->
+      <div class="card">
+        <div>
+          <h3>Piano di Accumulo (PAC)</h3>
+          <p>Simula la crescita dell'interesse composto valutando l'impatto reale di tasse su capital gain e imposta di bollo sui tuoi ETF o piani di risparmio.</p>
+        </div>
+        <a href="pac.html" class="btn">Apri Simulatore PAC</a>
+      </div>
+
+      <!-- 2. Previdenza Integrativa -->
+      <div class="card">
+        <div>
+          <h3>Previdenza Integrativa</h3>
+          <p>Calcola il risparmio fiscale derivante dalla deducibilità fino a 5.164,57 €/anno nei Fondi Pensione e proietta il tuo capitale a scadenza.</p>
+        </div>
+        <a href="previdenza.html" class="btn">Calcola Risparmio Fiscale</a>
+      </div>
+
+      <!-- 3. Investimenti Immobiliari -->
+      <div class="card">
+        <div>
+          <h3>Analisi Immobili</h3>
+          <p>Valuta la redditività netta (ROI) di un investimento immobiliare a reddito, considerando cedolare secca, spese di gestione e costi di acquisto.</p>
+        </div>
+        <a href="immobili.html" class="btn">Simula Rendimento</a>
+      </div>
+
+      <!-- 4. Gestione Finanze Personali -->
+      <div class="card">
+        <div>
+          <h3>Gestione Finanze Personali</h3>
+          <p>Modello di cash flow e allocazione della liquidità tra fondo di emergenza, spese correnti e quota destinata all'investimento.</p>
+        </div>
+        <a href="finanze.html" class="btn">Analizza Cash Flow</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>Disclaimer Didattico:</strong> Le informazioni e gli strumenti forniti su questo sito hanno esclusivamente finalità educative e divulgative. Non costituiscono in alcun modo sollecitazione all'investimento né consulenza finanziaria o fiscale personalizzata.</p>
+  </footer>
+
+</body>
+</html>
