@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fintech-simpro.github.io/Simulatori-finanziari/sitemap.xml
