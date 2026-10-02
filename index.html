@@ -21,6 +21,11 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pianificazione Finanziaria &amp; Educazione Patrimoniale</title>
   <meta name="description" content="Guida ed educazione alla gestione delle finanze personali: simulatori PAC, ottimizzazione fondi pensione, analisi immobiliare e gestione liquidità.">
+  
+  <!-- Bootstrap CSS & Icons per la Navbar -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
   <style>
     :root {
       --primary: #0f172a;
@@ -45,30 +50,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
       line-height: 1.6;
     }
 
-    /* NUOVO STILE DELL'HEADER (Sfondo bianco per risaltare il logo) */
-    header {
-      background: #ffffff;
-      color: var(--text-dark);
-      padding: 4rem 1.5rem;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    }
-
-    header h1 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      margin-bottom: 0.8rem;
-      color: var(--text-dark);
-    }
-
-    header p {
-      font-size: 1.1rem;
-      color: #64748b;
-      max-width: 650px;
-      margin: 0 auto;
-    }
-
     main {
       max-width: 1100px;
       margin: 2.5rem auto;
@@ -79,7 +60,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 1.5rem;
+      padding: 2rem 1.5rem;
       margin-bottom: 2.5rem;
       text-align: center;
     }
@@ -133,6 +114,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
     .btn:hover {
       background-color: #1d4ed8;
+      color: white;
     }
 
     footer {
@@ -148,18 +130,13 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 </head>
 <body>
 
-  <header>
-    <!-- LOGO SVG -->
-    <img src="simpro-svg.svg" alt="Fintech SimPro Logo" style="max-height: 110px; width: auto; margin-bottom: 1.5rem;">
-    
-    <h1>Pianificazione Finanziaria Indipendente</h1>
-    <p>Strumenti didattici, calcolatori e modelli pratici per ottimizzare la gestione del tuo patrimonio, la previdenza e gli investimenti.</p>
-  </header>
+  <!-- Menu di Navigazione Dinamico -->
+  <div id="navbar-placeholder"></div>
 
   <main>
     <section class="intro-box">
-      <h2>Benvenuto sulla piattaforma</h2>
-      <p>Utilizza i simulatori gratuiti qui sotto per analizzare l'efficienza fiscale, la crescita dei tuoi capitali e la sostenibilità dei tuoi progetti di vita.</p>
+      <h1 class="h2 fw-bold text-dark mb-3">Pianificazione Finanziaria Indipendente</h1>
+      <p class="text-secondary mb-0">Utilizza i simulatori gratuiti qui sotto per analizzare l'efficienza fiscale, la crescita dei tuoi capitali e la sostenibilità dei tuoi progetti di vita.</p>
     </section>
 
     <div class="grid">
@@ -205,5 +182,8 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
     <p><strong>Disclaimer Didattico:</strong> Le informazioni e gli strumenti forniti su questo sito hanno esclusivamente finalità educative e divulgative. Non costituiscono in alcun modo sollecitazione all'investimento né consulenza finanziaria o fiscale personalizzata.</p>
   </footer>
 
+  <!-- Bootstrap JS e Navbar Script -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="navbar.js"></script>
 </body>
 </html>
