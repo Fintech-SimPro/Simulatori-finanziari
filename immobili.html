@@ -39,13 +39,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             background-color: var(--bg-light);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
-        /* Header Bianco con Logo */
-        header {
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-        }
 
         .card {
             border-radius: 12px;
@@ -86,317 +79,292 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         .summary-danger { background-color: rgba(220, 53, 69, 0.08); border-left: 5px solid var(--danger-color); }
         .summary-info { background-color: rgba(13, 202, 240, 0.08); border-left: 5px solid var(--info-color); }
         .summary-warning { background-color: rgba(255, 193, 7, 0.12); border-left: 5px solid #ffc107; }
+        .summary-purple { background-color: rgba(114, 9, 183, 0.08); border-left: 5px solid var(--wants); }
 
         .stat-value { font-size: 1.35rem; font-weight: 700; color: var(--primary); }
         .stat-label { font-size: 0.8rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 
         .chart-container {
             position: relative;
-            height: 290px;
+            height: 310px;
             width: 100%;
         }
     </style>
 </head>
 <body>
 
-<!-- Header con Logo SVG Integrato -->
-<header class="py-3 mb-4">
-    <div class="container text-center">
-        <a href="index.html" class="text-decoration-none">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" height="60" style="max-width: 280px;">
-                <defs>
-                    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#0d6efd;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#0a58ca;stop-opacity:1" />
-                    </linearGradient>
-                    <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#198754;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#20c997;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
-                <path d="M 50 25 L 110 25 L 130 80 L 90 135 L 50 135 Z" fill="url(#shieldGrad)" opacity="0.95" />
-                <path d="M 50 25 L 90 25 L 110 80 L 70 135 L 30 80 Z" fill="url(#shieldGrad)" opacity="0.8" />
-                <rect x="52" y="90" width="14" height="30" rx="3" fill="white" opacity="0.9" />
-                <rect x="74" y="70" width="14" height="50" rx="3" fill="white" opacity="0.9" />
-                <rect x="96" y="45" width="14" height="75" rx="3" fill="url(#accentGrad)" />
-                <text x="160" y="75" font-family="'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="800" fill="#2b2d42">SimPro</text>
-                <text x="163" y="105" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#0d6efd" letter-spacing="2">FINANCE &amp; REAL ESTATE</text>
-                <text x="163" y="130" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" fill="#6c757d" letter-spacing="0.5">I tuoi Simulatori Finanziari</text>
-            </svg>
-        </a>
-        <p class="lead text-secondary mt-1 mb-0 fs-6">Real Estate Pro: Analisi Acquisto Casa, Tassazione, IMU e Rendita Locazione</p>
-    </div>
-</header>
+    <!-- Menu di Navigazione Dinamico -->
+    <div id="navbar-placeholder"></div>
 
-<div class="container pb-5">
+    <div class="container my-4 pb-5">
 
-    <!-- KPI Header principali -->
-    <div class="row mb-4 g-3">
-        <div class="col-6 col-md-3">
-            <div class="card h-100 border-primary border-2">
-                <div class="card-body text-center p-3">
-                    <div class="stat-label">Capitale Iniziale Totale</div>
-                    <div class="stat-value text-primary fs-5" id="out_capitale_totale_necessario">€ 0</div>
-                    <small class="text-muted" style="font-size: 0.72rem;">(Anticipo+Tasse+Lavori+Arredo)</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card h-100 border-danger border-2">
-                <div class="card-body text-center p-3">
-                    <div class="stat-label">Rata Mutuo Stimata</div>
-                    <div class="stat-value text-danger fs-5" id="out_rata">€ 0</div>
-                    <small class="text-muted" style="font-size: 0.72rem;" id="out_quota_mutuo_info">Mensile</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card h-100 border-warning border-2">
-                <div class="card-body text-center p-3">
-                    <div class="stat-label">IMU Annua Stimata</div>
-                    <div class="stat-value text-dark fs-5" id="out_imu_annua">€ 0</div>
-                    <small class="text-muted" style="font-size: 0.72rem;" id="out_imu_tag">Esenzione Prima Casa</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card h-100 border-success border-2 bg-success text-white bg-opacity-10">
-                <div class="card-body text-center p-3">
-                    <div class="stat-label text-success" id="label_kpi_4">Rientro Investimento</div>
-                    <div class="stat-value text-success fs-5" id="out_kpi_4">0 Anni</div>
-                    <small class="text-muted" style="font-size: 0.72rem;" id="sub_kpi_4">Payback Period</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Colonna Inputs -->
-        <div class="col-lg-5 mb-4">
-            <div class="card">
-                <div class="card-header text-primary">
-                    <i class="bi bi-sliders"></i> Configura l'Acquisto
-                </div>
-                <div class="card-body">
-                    
-                    <!-- Sezione Profilo Acquisto -->
-                    <h5 class="section-title title-primary"><i class="bi bi-person-gear me-1"></i> 1. Profilo Operazione</h5>
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Uso Immobile</label>
-                            <select class="form-select form-select-sm fw-bold" id="in_uso" onchange="toggleModalita(); calcola();">
-                                <option value="personale" selected>Dimora Personale</option>
-                                <option value="investimento">Messo a Rendita (Affitto)</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Regime Fiscale &amp; IMU</label>
-                            <select class="form-select form-select-sm" id="in_tipologia" onchange="calcola()">
-                                <option value="prima_casa" selected>Prima Casa (Reg. 2% - No IMU)</option>
-                                <option value="seconda_casa">Seconda Casa (Reg. 9% + IMU)</option>
-                            </select>
-                        </div>
-                        <div class="col-12 mt-2">
-                            <label class="form-label small fw-bold">Liquidità Disponibile Tua (€)</label>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">€</span>
-                                <input type="number" class="form-control fw-bold text-primary" id="in_liquidita" value="90000" oninput="calcola()">
-                            </div>
-                        </div>
+        <!-- KPI Header principali -->
+        <div class="row mb-4 g-3">
+            <div class="col-6 col-md-3">
+                <div class="card h-100 border-primary border-2">
+                    <div class="card-body text-center p-3">
+                        <div class="stat-label">Capitale Iniziale Totale</div>
+                        <div class="stat-value text-primary fs-5" id="out_capitale_totale_necessario">€ 0</div>
+                        <small class="text-muted" style="font-size: 0.72rem;">(Anticipo+Tasse+Lavori+Arredo)</small>
                     </div>
-
-                    <!-- Sezione Immobile -->
-                    <h5 class="section-title title-wants mt-4"><i class="bi bi-building me-1"></i> 2. Immobile &amp; Mercato</h5>
-                    <div class="row g-2 mb-3">
-                        <div class="col-12">
-                            <label class="form-label small fw-bold">Città / Mercato</label>
-                            <select class="form-select form-select-sm" id="in_citta" onchange="aggiornaCitta()">
-                                <option value="Milano">Milano</option>
-                                <option value="Roma">Roma</option>
-                                <option value="Bologna">Bologna</option>
-                                <option value="Firenze">Firenze</option>
-                                <option value="Napoli">Napoli</option>
-                                <option value="Torino">Torino</option>
-                                <option value="Genova">Genova</option>
-                                <option value="Palermo">Palermo</option>
-                                <option value="Venezia">Venezia</option>
-                                <option value="Provincia Nord">Provincia Nord</option>
-                                <option value="Provincia Centro">Provincia Centro</option>
-                                <option value="Provincia Sud">Provincia Sud</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Prezzo Immobile (€)</label>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">€</span>
-                                <input type="number" class="form-control fw-bold" id="in_prezzo" value="250000" oninput="calcola()">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Superficie (mq)</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" id="in_mq" value="75" oninput="aggiornaLavoriArredo(); calcola();">
-                                <span class="input-group-text">mq</span>
-                            </div>
-                        </div>
-                        <div class="col-12 text-end">
-                            <small class="text-muted" id="info_citta">Prezzo medio: 3.300 €/mq | Rendimento medio: 5.2%</small>
-                        </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card h-100 border-danger border-2">
+                    <div class="card-body text-center p-3">
+                        <div class="stat-label">Rata Mutuo Stimata</div>
+                        <div class="stat-value text-danger fs-5" id="out_rata">€ 0</div>
+                        <small class="text-muted" style="font-size: 0.72rem;" id="out_quota_mutuo_info">Mensile</small>
                     </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card h-100 border-warning border-2">
+                    <div class="card-body text-center p-3">
+                        <div class="stat-label">IMU Annua Stimata</div>
+                        <div class="stat-value text-dark fs-5" id="out_imu_annua">€ 0</div>
+                        <small class="text-muted" style="font-size: 0.72rem;" id="out_imu_tag">Esenzione Prima Casa</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card h-100 border-success border-2 bg-success text-white bg-opacity-10">
+                    <div class="card-body text-center p-3">
+                        <div class="stat-label text-success" id="label_kpi_4">Rientro Investimento</div>
+                        <div class="stat-value text-success fs-5" id="out_kpi_4">0 Anni</div>
+                        <small class="text-muted" style="font-size: 0.72rem;" id="sub_kpi_4">Payback Period</small>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Sezione Specifiche INVESTIMENTO (Invisibile se Uso Personale) -->
-                    <div id="box_inputs_investimento" class="d-none">
-                        <h5 class="section-title text-success mt-4"><i class="bi bi-cash-stack me-1"></i> 3. Parametri Locazione &amp; Fisco</h5>
+        <div class="row">
+            <!-- Colonna Inputs -->
+            <div class="col-lg-5 mb-4">
+                <div class="card">
+                    <div class="card-header text-primary">
+                        <i class="bi bi-sliders"></i> Configura l'Acquisto
+                    </div>
+                    <div class="card-body">
+                        
+                        <!-- Sezione Profilo Acquisto -->
+                        <h5 class="section-title title-primary"><i class="bi bi-person-gear me-1"></i> 1. Profilo Operazione</h5>
                         <div class="row g-2 mb-3">
                             <div class="col-6">
-                                <label class="form-label small fw-bold text-success">Affitto Mensile Lordo (€)</label>
+                                <label class="form-label small fw-bold">Uso Immobile</label>
+                                <select class="form-select form-select-sm fw-bold" id="in_uso" onchange="toggleModalita(); calcola();">
+                                    <option value="personale" selected>Dimora Personale</option>
+                                    <option value="investimento">Messo a Rendita (Affitto)</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Regime Fiscale &amp; IMU</label>
+                                <select class="form-select form-select-sm" id="in_tipologia" onchange="calcola()">
+                                    <option value="prima_casa" selected>Prima Casa (Reg. 2% - No IMU)</option>
+                                    <option value="seconda_casa">Seconda Casa (Reg. 9% + IMU)</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <label class="form-label small fw-bold">Liquidità Disponibile Tua (€)</label>
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text">€</span>
-                                    <input type="number" class="form-control fw-bold text-success" id="in_affitto_richiesto" value="1000" step="50" oninput="calcola()">
+                                    <input type="number" class="form-control fw-bold text-primary" id="in_liquidita" value="90000" oninput="calcola()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sezione Immobile -->
+                        <h5 class="section-title title-wants mt-4"><i class="bi bi-building me-1"></i> 2. Immobile &amp; Mercato</h5>
+                        <div class="row g-2 mb-3">
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Città / Mercato</label>
+                                <select class="form-select form-select-sm" id="in_citta" onchange="aggiornaCitta()">
+                                    <option value="Milano">Milano</option>
+                                    <option value="Roma">Roma</option>
+                                    <option value="Bologna">Bologna</option>
+                                    <option value="Firenze">Firenze</option>
+                                    <option value="Napoli">Napoli</option>
+                                    <option value="Torino">Torino</option>
+                                    <option value="Genova">Genova</option>
+                                    <option value="Palermo">Palermo</option>
+                                    <option value="Venezia">Venezia</option>
+                                    <option value="Provincia Nord">Provincia Nord</option>
+                                    <option value="Provincia Centro">Provincia Centro</option>
+                                    <option value="Provincia Sud">Provincia Sud</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Prezzo Immobile (€)</label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">€</span>
+                                    <input type="number" class="form-control fw-bold" id="in_prezzo" value="250000" oninput="calcola()">
                                 </div>
                             </div>
                             <div class="col-6">
-                                <label class="form-label small fw-bold">Tassazione Affitto</label>
-                                <select class="form-select form-select-sm" id="in_regime_fiscale_affitto" onchange="calcola()">
-                                    <option value="cedolare_21" selected>Cedolare Secca 21% (Libero)</option>
-                                    <option value="cedolare_10">Cedolare Secca 10% (Concordato)</option>
-                                    <option value="irpef_35">IRPEF Ordinaria (~35%)</option>
+                                <label class="form-label small fw-bold">Superficie (mq)</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" class="form-control" id="in_mq" value="75" oninput="aggiornaLavoriArredo(); calcola();">
+                                    <span class="input-group-text">mq</span>
+                                </div>
+                            </div>
+                            <div class="col-12 text-end">
+                                <small class="text-muted" id="info_citta">Prezzo medio: 3.300 €/mq | Rendimento medio: 5.2%</small>
+                            </div>
+                        </div>
+
+                        <!-- Sezione Specifiche INVESTIMENTO -->
+                        <div id="box_inputs_investimento" class="d-none">
+                            <h5 class="section-title text-success mt-4"><i class="bi bi-cash-stack me-1"></i> 3. Parametri Locazione &amp; Fisco</h5>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold text-success">Affitto Mensile Lordo (€)</label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text">€</span>
+                                        <input type="number" class="form-control fw-bold text-success" id="in_affitto_richiesto" value="1000" step="50" oninput="calcola()">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold">Tassazione Affitto</label>
+                                    <select class="form-select form-select-sm" id="in_regime_fiscale_affitto" onchange="calcola()">
+                                        <option value="cedolare_21" selected>Cedolare Secca 21% (Libero)</option>
+                                        <option value="cedolare_10">Cedolare Secca 10% (Concordato)</option>
+                                        <option value="irpef_35">IRPEF Ordinaria (~35%)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold">Spese Gestione, Manutenzione e Sfitto (% su affitto)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control" id="in_spese_gestione_pct" value="10" step="1" oninput="calcola()">
+                                        <span class="input-group-text">% dell'affitto annuo</span>
+                                    </div>
+                                    <small class="text-muted" style="font-size:0.7rem;">Stima accantonamento per manutenzioni e periodi di sfitto.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sezione Ristrutturazione & Arredamento -->
+                        <h5 class="section-title title-primary mt-4"><i class="bi bi-hammer me-1"></i> <span id="num_sec_lavori">3</span>. Lavori &amp; Arredamento</h5>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Lavori Ristrutturazione</label>
+                                <select class="form-select form-select-sm" id="in_lavori_tipo" onchange="aggiornaLavoriArredo(); calcola();">
+                                    <option value="parziale" selected>Parziale (~500 €/mq)</option>
+                                    <option value="totale">Totale (~1.000 €/mq)</option>
+                                    <option value="nessuna">Nessuna (0 €)</option>
+                                    <option value="manuale">Personalizzata</option>
                                 </select>
                             </div>
-                            <div class="col-12">
-                                <label class="form-label small fw-bold">Spese Gestione, Manutenzione e Sfitto (% su affitto)</label>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Costo Lavori (€)</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="number" class="form-control" id="in_spese_gestione_pct" value="10" step="1" oninput="calcola()">
-                                    <span class="input-group-text">% dell'affitto annuo</span>
+                                    <span class="input-group-text">€</span>
+                                    <input type="number" class="form-control" id="in_lavori" value="37500" step="1000" oninput="setLavoriManuale(); calcola();">
                                 </div>
-                                <small class="text-muted" style="font-size:0.7rem;">Stima accantonamento per manutenzioni e periodi di sfitto.</small>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Arredamento (Ambito)</label>
+                                <select class="form-select form-select-sm" id="in_arredo_ambito" onchange="calcola()">
+                                    <option value="totale" selected>Totale (Tutta casa)</option>
+                                    <option value="parziale">Parziale (Cucina/Bagno)</option>
+                                    <option value="nessuno">Nessuno (Già arredata)</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Qualità Arredo</label>
+                                <select class="form-select form-select-sm" id="in_arredo_qualita" onchange="calcola()">
+                                    <option value="standard" selected>Standard (~300 €/mq)</option>
+                                    <option value="premium">Premium (~600 €/mq)</option>
+                                    <option value="lusso">Lusso (~1.200 €/mq)</option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-end">
+                                <small class="text-muted">Costo arredo calcolato: <strong id="out_costo_arredo_preview">€ 0</strong></small>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Sezione Ristrutturazione & Arredamento -->
-                    <h5 class="section-title title-primary mt-4"><i class="bi bi-hammer me-1"></i> <span id="num_sec_lavori">3</span>. Lavori &amp; Arredamento</h5>
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Lavori Ristrutturazione</label>
-                            <select class="form-select form-select-sm" id="in_lavori_tipo" onchange="aggiornaLavoriArredo(); calcola();">
-                                <option value="parziale" selected>Parziale (~500 €/mq)</option>
-                                <option value="totale">Totale (~1.000 €/mq)</option>
-                                <option value="nessuna">Nessuna (0 €)</option>
-                                <option value="manuale">Personalizzata</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Costo Lavori (€)</label>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">€</span>
-                                <input type="number" class="form-control" id="in_lavori" value="37500" step="1000" oninput="setLavoriManuale(); calcola();">
+                        <!-- Sezione Mutuo -->
+                        <h5 class="section-title title-wants mt-4"><i class="bi bi-bank me-1"></i> <span id="num_sec_mutuo">4</span>. Dettagli Mutuo</h5>
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <label class="form-label small fw-bold">Anticipo</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" class="form-control" id="in_anticipo" value="20" oninput="calcola()">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold">Durata</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" class="form-control" id="in_durata" value="25" oninput="calcola()">
+                                    <span class="input-group-text">Anni</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold">Tasso TAN</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" class="form-control" id="in_tasso" value="3.2" step="0.1" oninput="calcola()">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Input dinamico se Personale -->
+                            <div class="col-12 mt-2" id="box_affitto_personale">
+                                <label class="form-label small fw-bold">Affitto Mensile Attuale (Evitato)</label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">€</span>
+                                    <input type="number" class="form-control text-danger fw-bold" id="in_affitto" value="950" oninput="calcola()">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Arredamento (Ambito)</label>
-                            <select class="form-select form-select-sm" id="in_arredo_ambito" onchange="calcola()">
-                                <option value="totale" selected>Totale (Tutta casa)</option>
-                                <option value="parziale">Parziale (Cucina/Bagno)</option>
-                                <option value="nessuno">Nessuno (Già arredata)</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Qualità Arredo</label>
-                            <select class="form-select form-select-sm" id="in_arredo_qualita" onchange="calcola()">
-                                <option value="standard" selected>Standard (~300 €/mq)</option>
-                                <option value="premium">Premium (~600 €/mq)</option>
-                                <option value="lusso">Lusso (~1.200 €/mq)</option>
-                            </select>
-                        </div>
-                        <div class="col-12 text-end">
-                            <small class="text-muted">Costo arredo calcolato: <strong id="out_costo_arredo_preview">€ 0</strong></small>
-                        </div>
-                    </div>
 
-                    <!-- Sezione Mutuo -->
-                    <h5 class="section-title title-wants mt-4"><i class="bi bi-bank me-1"></i> <span id="num_sec_mutuo">4</span>. Dettagli Mutuo</h5>
-                    <div class="row g-2 mb-3">
-                        <div class="col-4">
-                            <label class="form-label small fw-bold">Anticipo</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" id="in_anticipo" value="20" oninput="calcola()">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <label class="form-label small fw-bold">Durata</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" id="in_durata" value="25" oninput="calcola()">
-                                <span class="input-group-text">Anni</span>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <label class="form-label small fw-bold">Tasso TAN</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" id="in_tasso" value="3.2" step="0.1" oninput="calcola()">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Input dinamico se Personale -->
-                        <div class="col-12 mt-2" id="box_affitto_personale">
-                            <label class="form-label small fw-bold">Affitto Mensile Attuale (Evitato)</label>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">€</span>
-                                <input type="number" class="form-control text-danger fw-bold" id="in_affitto" value="950" oninput="calcola()">
-                            </div>
-                        </div>
                     </div>
-
                 </div>
             </div>
-        </div>
 
-        <!-- Colonna Grafici & Risultati -->
-        <div class="col-lg-7 mb-4">
-            <div class="card h-100">
-                <div class="card-header text-primary d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-bar-chart-fill me-1"></i> Confronto Grandezze Totali (<span id="out_durata_titolo">25</span> Anni)</span>
-                    <span class="badge bg-primary" id="badge_modalita">Dimora Personale</span>
-                </div>
-                <div class="card-body">
-                    
-                    <div class="chart-container mb-3">
-                        <canvas id="balanceChart"></canvas>
+            <!-- Colonna Grafici & Risultati -->
+            <div class="col-lg-7 mb-4">
+                <div class="card h-100">
+                    <div class="card-header text-primary d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-bar-chart-fill me-1"></i> Confronto Grandezze Totali (<span id="out_durata_titolo">25</span> Anni)</span>
+                        <span class="badge bg-primary" id="badge_modalita">Dimora Personale</span>
                     </div>
-
-                    <div class="mt-4">
-                        <h6 class="fw-bold mb-3">Sintesi Finanziaria e Copertura Capitale:</h6>
+                    <div class="card-body">
                         
-                        <!-- Box Capitale Iniziale -->
-                        <div class="summary-box summary-warning">
-                            <div class="w-100">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <strong><i class="bi bi-wallet2 text-dark me-1"></i> Liquidità Iniziale per il Rogito</strong>
-                                    <strong class="text-dark" id="out_totale_capitale_box">€ 0</strong>
+                        <div class="chart-container mb-3">
+                            <canvas id="balanceChart"></canvas>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6 class="fw-bold mb-3">Sintesi Finanziaria e Copertura Capitale:</h6>
+                            
+                            <!-- Box Capitale Iniziale -->
+                            <div class="summary-box summary-warning">
+                                <div class="w-100">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <strong><i class="bi bi-wallet2 text-dark me-1"></i> Liquidità Iniziale per il Rogito</strong>
+                                        <strong class="text-dark" id="out_totale_capitale_box">€ 0</strong>
+                                    </div>
+                                    <small class="text-muted">Comprende: Anticipo (<span id="out_anticipo_val">€ 0</span>), Imposte &amp; Notai (<span id="out_imposte_val">€ 0</span>), Lavori (<span id="out_lavori_val">€ 0</span>) e Arredo (<span id="out_arredo_val">€ 0</span>).</small>
                                 </div>
-                                <small class="text-muted">Comprende: Anticipo (<span id="out_anticipo_val">€ 0</span>), Imposte &amp; Notai (<span id="out_imposte_val">€ 0</span>), Lavori (<span id="out_lavori_val">€ 0</span>) e Arredo (<span id="out_arredo_val">€ 0</span>).</small>
                             </div>
+
+                            <!-- Box Risultati Dinamici (Uso Personale vs Investimento) -->
+                            <div id="box_risultato_dinamico">
+                                <!-- Inserito via JS -->
+                            </div>
+
                         </div>
 
-                        <!-- Box Risultati Dinamici (Uso Personale vs Investimento) -->
-                        <div id="box_risultato_dinamico">
-                            <!-- Inserito via JS -->
+                        <!-- Banner Alert Liquidità Iniziale -->
+                        <div id="feedback_box" class="mt-3">
+                            <!-- Consigli e alert iniettati via JS -->
                         </div>
 
                     </div>
-
-                    <!-- Banner Alert Liquidità Iniziale -->
-                    <div id="feedback_box" class="mt-3">
-                        <!-- Consigli e alert iniettati via JS -->
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 <script>
     // Database citta italiane
@@ -448,7 +416,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         const prezzoStimato = Math.round(dati.prezzo_mq * mq);
         document.getElementById('in_prezzo').value = prezzoStimato;
         
-        // Suggerisci canone affitto per la città
         const canoneMensileStimato = Math.round((prezzoStimato * dati.yield_affitto) / 12);
         document.getElementById('in_affitto_richiesto').value = canoneMensileStimato;
 
@@ -514,7 +481,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
         // 2. Imposte e IMU
         let pct_imposte = tipologia === 'prima_casa' ? 0.02 : 0.09;
-        let aliquota_costi_totali = pct_imposte + 0.05; // +5% Notaio, Agenzia (3%) e Istruttoria
+        let aliquota_costi_totali = pct_imposte + 0.05; 
         const costi_iniziali = prezzo_casa * aliquota_costi_totali;
 
         let imu_annua = 0;
@@ -567,16 +534,17 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             document.getElementById('out_kpi_4').innerText = formatEur(valore_futuro_casa);
 
             const tot_affitto_evitato = affitto_evitato * 12 * durata_anni;
-            const tot_uscite = capitale_totale_necessario + totale_mutuo_pagato - anticipo_euro;
+            const tot_uscite_lordo = capitale_totale_necessario + totale_mutuo_pagato - anticipo_euro;
+            const spesa_netta_effettiva = tot_uscite_lordo - tot_affitto_evitato;
 
             boxDinamico.innerHTML = `
                 <div class="summary-box summary-danger">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
                             <strong><i class="bi bi-arrow-down-circle text-danger me-1"></i> Uscita Totale per l'Acquisto (${durata_anni} Anni)</strong>
-                            <strong class="text-danger">${formatEur(tot_uscite)}</strong>
+                            <strong class="text-danger">${formatEur(tot_uscite_lordo)}</strong>
                         </div>
-                        <small class="text-muted">Somma di Capitale Iniziale (${formatEur(capitale_totale_necessario)}) + tutte le rate del mutuo (${formatEur(totale_mutuo_pagato)}).</small>
+                        <small class="text-muted">Capitale Iniziale (${formatEur(capitale_totale_necessario)}) + Mutuo (${formatEur(totale_mutuo_pagato)}).</small>
                     </div>
                 </div>
                 <div class="summary-box summary-info">
@@ -585,7 +553,16 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                             <strong><i class="bi bi-shield-check text-info me-1"></i> Risparmio Affitto Evitato Totale</strong>
                             <strong class="text-info">${formatEur(tot_affitto_evitato)}</strong>
                         </div>
-                        <small class="text-muted">Somma degli affitti che NON verserai a fondo perduto in ${durata_anni} anni.</small>
+                        <small class="text-muted">Somma degli affitti non versati in ${durata_anni} anni.</small>
+                    </div>
+                </div>
+                <div class="summary-box summary-purple">
+                    <div class="w-100">
+                        <div class="d-flex justify-content-between mb-1">
+                            <strong><i class="bi bi-calculator text-primary me-1"></i> Spesa Netta Effettiva (Uscite - Affitti Evitati)</strong>
+                            <strong class="text-primary">${formatEur(spesa_netta_effettiva)}</strong>
+                        </div>
+                        <small class="text-muted">Il vero costo netto della casa considerando i soldi risparmiati dall'affitto.</small>
                     </div>
                 </div>
                 <div class="summary-box summary-success">
@@ -599,9 +576,9 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 </div>
             `;
 
-            labelsGrafico = ['Capitale Iniziale', 'Totale Mutuo Pagato', 'Affitto Evitato Totale', 'Valore Casa Futuro'];
-            dataGrafico = [capitale_totale_necessario, totale_mutuo_pagato, tot_affitto_evitato, valore_futuro_casa];
-            coloriGrafico = ['#ffc107', '#dc3545', '#0dcaf0', '#198754'];
+            labelsGrafico = ['Capitale Iniziale', 'Totale Mutuo', 'Affitto Evitato', 'Spesa Netta Effettiva', 'Valore Casa Futuro'];
+            dataGrafico = [capitale_totale_necessario, totale_mutuo_pagato, tot_affitto_evitato, spesa_netta_effettiva, valore_futuro_casa];
+            coloriGrafico = ['#ffc107', '#dc3545', '#0dcaf0', '#7209b7', '#198754'];
 
         } else {
             // MODE: INVESTIMENTO (Messo a Rendita)
@@ -630,6 +607,10 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             // Cash Flow Netto Finale (dopo rata mutuo)
             const cash_flow_mensile_netto = incasso_netto_mensile - rata_mensile;
 
+            // Calcolo Uscite e Spesa Netta Totale dell'Operazione
+            const tot_uscite_investimento = (capitale_totale_necessario - anticipo_euro) + totale_mutuo_pagato + ((imu_annua + tasse_locazione_annue + spese_gestione_annue) * durata_anni);
+            const spesa_netta_operazione = tot_uscite_investimento - tot_affitto_lordo_incassato;
+
             // Rendimento Netto % (Cap Rate) su Capitale Investito
             const rendimento_netto_pct = capitale_totale_necessario > 0 ? (incasso_netto_annuo / capitale_totale_necessario) * 100 : 0;
 
@@ -655,6 +636,15 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                         </small>
                     </div>
                 </div>
+                <div class="summary-box summary-purple">
+                    <div class="w-100">
+                        <div class="d-flex justify-content-between mb-1">
+                            <strong><i class="bi bi-cash-coin text-primary me-1"></i> Spesa Netta Operazione (${durata_anni} Anni)</strong>
+                            <strong class="text-primary">${formatEur(spesa_netta_operazione)}</strong>
+                        </div>
+                        <small class="text-muted">Esborso reale complessivo (Uscite Totali - Affitti Incassati) per acquisire l'immobile.</small>
+                    </div>
+                </div>
                 <div class="summary-box summary-success">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
@@ -675,10 +665,9 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 </div>
             `;
 
-            // Grafico omogeneo con grandezze pluriennali totali
-            labelsGrafico = ['Capitale Iniziale', 'Totale Mutuo Pagato', 'Totale Affitto Incassato', 'Valore Casa Futuro'];
-            dataGrafico = [capitale_totale_necessario, totale_mutuo_pagato, tot_affitto_lordo_incassato, valore_futuro_casa];
-            coloriGrafico = ['#ffc107', '#dc3545', '#198754', '#4361ee'];
+            labelsGrafico = ['Capitale Iniziale', 'Totale Mutuo', 'Affitto Incassato', 'Spesa Netta Operazione', 'Valore Casa Futuro'];
+            dataGrafico = [capitale_totale_necessario, totale_mutuo_pagato, tot_affitto_lordo_incassato, spesa_netta_operazione, valore_futuro_casa];
+            coloriGrafico = ['#ffc107', '#dc3545', '#198754', '#7209b7', '#4361ee'];
         }
 
         // 6. Feedback Liquidità Iniziale
@@ -760,7 +749,8 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
     };
 </script>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS e Navbar Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="navbar.js"></script>
 </body>
 </html>
