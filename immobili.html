@@ -19,7 +19,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Estate Pro - Simulatore Acquisto Casa</title>
+    <title>Real Estate Pro - Simulatore Acquisto Casa e Rendita</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -124,7 +124,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 <text x="163" y="130" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" fill="#6c757d" letter-spacing="0.5">I tuoi Simulatori Finanziari</text>
             </svg>
         </a>
-        <p class="lead text-secondary mt-1 mb-0 fs-6">Simulatore Acquisto Immobiliare: Bilancio Capitale, Mutuo, Lavori &amp; Rendita</p>
+        <p class="lead text-secondary mt-1 mb-0 fs-6">Real Estate Pro: Analisi Acquisto Casa, Tassazione, IMU e Rendimento Locazione</p>
     </div>
 </header>
 
@@ -153,18 +153,18 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         <div class="col-6 col-md-3">
             <div class="card h-100 border-warning border-2">
                 <div class="card-body text-center p-3">
-                    <div class="stat-label" id="label_kpi_3">Spese Notaio/Tasse</div>
-                    <div class="stat-value text-dark fs-5" id="out_costi_iniziali">€ 0</div>
-                    <small class="text-muted" style="font-size: 0.72rem;" id="out_imposte_tag">Imposte stimate</small>
+                    <div class="stat-label">IMU Annua Stimata</div>
+                    <div class="stat-value text-dark fs-5" id="out_imu_annua">€ 0</div>
+                    <small class="text-muted" style="font-size: 0.72rem;" id="out_imu_tag">Esenzione Prima Casa</small>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="card h-100 border-success border-2 bg-success text-white bg-opacity-10">
                 <div class="card-body text-center p-3">
-                    <div class="stat-label text-success" id="label_kpi_4">Valore Casa Futuro</div>
-                    <div class="stat-value text-success fs-5" id="out_valore_futuro">€ 0</div>
-                    <small class="text-muted" style="font-size: 0.72rem;" id="sub_kpi_4">A fine mutuo</small>
+                    <div class="stat-label text-success" id="label_kpi_4">Rientro Investimento</div>
+                    <div class="stat-value text-success fs-5" id="out_kpi_4">0 Anni</div>
+                    <small class="text-muted" style="font-size: 0.72rem;" id="sub_kpi_4">Payback Period</small>
                 </div>
             </div>
         </div>
@@ -180,20 +180,20 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 <div class="card-body">
                     
                     <!-- Sezione Profilo Acquisto -->
-                    <h5 class="section-title title-primary"><i class="bi bi-person-gear me-1"></i> 1. Tipo Operazione &amp; Liquidità</h5>
+                    <h5 class="section-title title-primary"><i class="bi bi-person-gear me-1"></i> 1. Profilo Operazione</h5>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label small fw-bold">Uso Immobile</label>
-                            <select class="form-select form-select-sm fw-bold" id="in_uso" onchange="calcola()">
+                            <select class="form-select form-select-sm fw-bold" id="in_uso" onchange="toggleModalita(); calcola();">
                                 <option value="personale" selected>Dimora Personale</option>
-                                <option value="investimento">Investimento (Rendita)</option>
+                                <option value="investimento">Messo a Rendita (Affitto)</option>
                             </select>
                         </div>
                         <div class="col-6">
-                            <label class="form-label small fw-bold">Regime Fiscale</label>
+                            <label class="form-label small fw-bold">Regime Fiscale &amp; IMU</label>
                             <select class="form-select form-select-sm" id="in_tipologia" onchange="calcola()">
-                                <option value="prima_casa" selected>Prima Casa (Reg. 2%)</option>
-                                <option value="seconda_casa">Seconda Casa (Reg. 9%)</option>
+                                <option value="prima_casa" selected>Prima Casa (Reg. 2% - No IMU)</option>
+                                <option value="seconda_casa">Seconda Casa (Reg. 9% + IMU)</option>
                             </select>
                         </div>
                         <div class="col-12 mt-2">
@@ -206,7 +206,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     </div>
 
                     <!-- Sezione Immobile -->
-                    <h5 class="section-title title-wants mt-4"><i class="bi bi-building me-1"></i> 2. L'Immobile &amp; Zona</h5>
+                    <h5 class="section-title title-wants mt-4"><i class="bi bi-building me-1"></i> 2. Immobile &amp; Mercato</h5>
                     <div class="row g-2 mb-3">
                         <div class="col-12">
                             <label class="form-label small fw-bold">Città / Mercato</label>
@@ -244,8 +244,38 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                         </div>
                     </div>
 
+                    <!-- Sezione Specifiche INVESTIMENTO (Invisibile se Uso Personale) -->
+                    <div id="box_inputs_investimento" class="d-none">
+                        <h5 class="section-title text-success mt-4"><i class="bi bi-cash-stack me-1"></i> 3. Parametri Locazione &amp; Fisco</h5>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-success">Affitto Mensile Lordo (€)</label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">€</span>
+                                    <input type="number" class="form-control fw-bold text-success" id="in_affitto_richiesto" value="1000" step="50" oninput="calcola()">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Tassazione Affitto</label>
+                                <select class="form-select form-select-sm" id="in_regime_fiscale_affitto" onchange="calcola()">
+                                    <option value="cedolare_21" selected>Cedolare Secca 21% (Libero)</option>
+                                    <option value="cedolare_10">Cedolare Secca 10% (Concordato)</option>
+                                    <option value="irpef_35">IRPEF Ordinaria (~35%)</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Spese Gestione, Manutenzione e Sfitto (% su affitto)</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" class="form-control" id="in_spese_gestione_pct" value="10" step="1" oninput="calcola()">
+                                    <span class="input-group-text">% dell'affitto annuo</span>
+                                </div>
+                                <small class="text-muted" style="font-size:0.7rem;">Stima accantonamento per manutenzioni e periodi di sfitto.</small>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Sezione Ristrutturazione & Arredamento -->
-                    <h5 class="section-title title-primary mt-4"><i class="bi bi-hammer me-1"></i> 3. Lavori &amp; Arredamento</h5>
+                    <h5 class="section-title title-primary mt-4"><i class="bi bi-hammer me-1"></i> <span id="num_sec_lavori">3</span>. Lavori &amp; Arredamento</h5>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label small fw-bold">Lavori Ristrutturazione</label>
@@ -285,7 +315,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     </div>
 
                     <!-- Sezione Mutuo -->
-                    <h5 class="section-title title-wants mt-4"><i class="bi bi-bank me-1"></i> 4. Dettagli Mutuo</h5>
+                    <h5 class="section-title title-wants mt-4"><i class="bi bi-bank me-1"></i> <span id="num_sec_mutuo">4</span>. Dettagli Mutuo</h5>
                     <div class="row g-2 mb-3">
                         <div class="col-4">
                             <label class="form-label small fw-bold">Anticipo</label>
@@ -309,7 +339,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                             </div>
                         </div>
                         
-                        <!-- Input dinamico in base all'uso -->
+                        <!-- Input dinamico se Personale -->
                         <div class="col-12 mt-2" id="box_affitto_personale">
                             <label class="form-label small fw-bold">Affitto Mensile Attuale (Evitato)</label>
                             <div class="input-group input-group-sm">
@@ -357,7 +387,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
                     </div>
 
-                    <!-- Banner Alert Liquidità Iniziale (Leggibile e ad alto contrasto) -->
+                    <!-- Banner Alert Liquidità Iniziale -->
                     <div id="feedback_box" class="mt-3">
                         <!-- Consigli e alert iniettati via JS -->
                     </div>
@@ -389,12 +419,39 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
     const formatEur = (num) => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(num);
 
+    function toggleModalita() {
+        const uso = document.getElementById('in_uso').value;
+        const boxInvestimento = document.getElementById('box_inputs_investimento');
+        const boxPersonale = document.getElementById('box_affitto_personale');
+        
+        if (uso === 'investimento') {
+            boxInvestimento.classList.remove('d-none');
+            boxPersonale.classList.add('d-none');
+            document.getElementById('num_sec_lavori').innerText = '4';
+            document.getElementById('num_sec_mutuo').innerText = '5';
+            
+            // Forza seconda casa per investimento
+            document.getElementById('in_tipologia').value = 'seconda_casa';
+        } else {
+            boxInvestimento.classList.add('d-none');
+            boxPersonale.classList.remove('d-none');
+            document.getElementById('num_sec_lavori').innerText = '3';
+            document.getElementById('num_sec_mutuo').innerText = '4';
+        }
+    }
+
     function aggiornaCitta() {
         const citta = document.getElementById('in_citta').value;
         const dati = dbCitta[citta];
         const mq = parseFloat(document.getElementById('in_mq').value) || 75;
         
-        document.getElementById('in_prezzo').value = Math.round(dati.prezzo_mq * mq);
+        const prezzoStimato = Math.round(dati.prezzo_mq * mq);
+        document.getElementById('in_prezzo').value = prezzoStimato;
+        
+        // Suggerisci canone affitto per la città
+        const canoneMensileStimato = Math.round((prezzoStimato * dati.yield_affitto) / 12);
+        document.getElementById('in_affitto_richiesto').value = canoneMensileStimato;
+
         document.getElementById('info_citta').innerHTML = `Prezzo medio: ${formatEur(dati.prezzo_mq)}/mq | Rendimento medio affitto: ${(dati.yield_affitto*100).toFixed(1)}%`;
         
         aggiornaLavoriArredo();
@@ -425,7 +482,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
     }
 
     function calcola() {
-        // Lettura Inputs
         const uso = document.getElementById('in_uso').value;
         const tipologia = document.getElementById('in_tipologia').value;
         const liquidita = parseFloat(document.getElementById('in_liquidita').value) || 0;
@@ -444,22 +500,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
         const datiCitta = dbCitta[citta];
 
-        // UI Toggle Uso Immobile
-        if (uso === 'investimento') {
-            document.getElementById('box_affitto_personale').classList.add('d-none');
-            document.getElementById('badge_modalita').innerText = 'Investimento a Rendita';
-            document.getElementById('badge_modalita').className = 'badge bg-success';
-            document.getElementById('label_kpi_4').innerText = 'Affitto Consigliato';
-            document.getElementById('sub_kpi_4').innerText = 'Stimato al mese';
-        } else {
-            document.getElementById('box_affitto_personale').classList.remove('d-none');
-            document.getElementById('badge_modalita').innerText = 'Dimora Personale';
-            document.getElementById('badge_modalita').className = 'badge bg-primary';
-            document.getElementById('label_kpi_4').innerText = 'Valore Casa Futuro';
-            document.getElementById('sub_kpi_4').innerText = 'A fine mutuo';
-        }
-
-        // 1. Stima Arredamento (Standard: 300 €/mq, Premium: 600 €/mq, Lusso: 1200 €/mq)
+        // 1. Stima Arredamento
         let costo_mq_arredo = 300;
         if (arredo_qualita === 'premium') costo_mq_arredo = 600;
         if (arredo_qualita === 'lusso') costo_mq_arredo = 1200;
@@ -471,52 +512,57 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         const costo_arredo = mq * costo_mq_arredo * fattore_ambito;
         document.getElementById('out_costo_arredo_preview').innerText = formatEur(costo_arredo);
 
-        // 2. Imposte e Costi Accessori Compravendita
+        // 2. Imposte e IMU
         let pct_imposte = tipologia === 'prima_casa' ? 0.02 : 0.09;
-        let aliquota_costi_totali = pct_imposte + 0.05; // +5% per Notaio, Agenzia (3%) e Perizia
+        let aliquota_costi_totali = pct_imposte + 0.05; // +5% Notaio, Agenzia (3%) e Istruttoria
         const costi_iniziali = prezzo_casa * aliquota_costi_totali;
 
-        document.getElementById('out_imposte_tag').innerText = tipologia === 'prima_casa' ? 'Prima Casa (Reg. 2% + Notai/Agenzia)' : 'Seconda Casa (Reg. 9% + Notai/Agenzia)';
+        // Calcolo IMU (Prima Casa = 0€; Seconda Casa = ~0.6% valore immobile/anno)
+        let imu_annua = 0;
+        if (tipologia === 'seconda_casa' || uso === 'investimento') {
+            imu_annua = prezzo_casa * 0.006; 
+            document.getElementById('out_imu_tag').innerText = 'Aliquota media ~0.6%';
+        } else {
+            document.getElementById('out_imu_tag').innerText = 'Esenzione Prima Casa';
+        }
+        document.getElementById('out_imu_annua').innerText = formatEur(imu_annua);
 
-        // 3. Calcolo Capitale Iniziale Necessario
+        // 3. Capitale Iniziale Necessario
         const anticipo_euro = prezzo_casa * (anticipo_pct / 100);
         const capitale_totale_necessario = anticipo_euro + costi_iniziali + lavori + costo_arredo;
         const liquidita_residua = liquidita - capitale_totale_necessario;
 
-        // 4. Calcolo Mutuo
+        // 4. Mutuo
         const importo_mutuo = prezzo_casa - anticipo_euro;
         const tasso_mensile = (tasso_annuo / 100) / 12;
         const numero_rate = durata_anni * 12;
         const rata_mensile = PMT(tasso_mensile, numero_rate, importo_mutuo);
         const totale_mutuo_pagato = rata_mensile * numero_rate;
 
-        // 5. Proiezioni Futuro & Rendita
+        // 5. Proiezioni Futuro
         const valore_futuro_casa = prezzo_casa * Math.pow((1 + datiCitta.app_annuo), durata_anni);
-        const affitto_consigliato_mensile = (prezzo_casa * datiCitta.yield_affitto) / 12;
 
-        // Update KPIs Top
+        // Top KPIs
         document.getElementById('out_capitale_totale_necessario').innerText = formatEur(capitale_totale_necessario);
         document.getElementById('out_rata').innerText = formatEur(rata_mensile);
-        document.getElementById('out_costi_iniziali').innerText = formatEur(costi_iniziali);
-
-        if (uso === 'investimento') {
-            document.getElementById('out_valore_futuro').innerText = formatEur(affitto_consigliato_mensile) + ' /m';
-        } else {
-            document.getElementById('out_valore_futuro').innerText = formatEur(valore_futuro_casa);
-        }
-
         document.getElementById('out_durata_titolo').innerText = durata_anni;
 
-        // Aggiornamento Box Sintesi Capitale
+        // Box Sintesi Capitale
         document.getElementById('out_totale_capitale_box').innerText = formatEur(capitale_totale_necessario);
         document.getElementById('out_anticipo_val').innerText = formatEur(anticipo_euro);
         document.getElementById('out_imposte_val').innerText = formatEur(costi_iniziali);
         document.getElementById('out_lavori_val').innerText = formatEur(lavori);
         document.getElementById('out_arredo_val').innerText = formatEur(costo_arredo);
 
-        // Contenuto dinamico uso
         const boxDinamico = document.getElementById('box_risultato_dinamico');
+
         if (uso === 'personale') {
+            document.getElementById('badge_modalita').innerText = 'Dimora Personale';
+            document.getElementById('badge_modalita').className = 'badge bg-primary';
+            document.getElementById('label_kpi_4').innerText = 'Valore Casa Futuro';
+            document.getElementById('sub_kpi_4').innerText = `A ${durata_anni} Anni`;
+            document.getElementById('out_kpi_4').innerText = formatEur(valore_futuro_casa);
+
             const tot_affitto_evitato = affitto_evitato * 12 * durata_anni;
             const tot_uscite = capitale_totale_necessario + totale_mutuo_pagato - anticipo_euro;
 
@@ -550,42 +596,79 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 </div>
             `;
         } else {
-            const incasso_annuo_lordo = affitto_consigliato_mensile * 12;
-            const roi_lordo = (incasso_annuo_lordo / capitale_totale_necessario) * 100;
-            const cash_flow_mensile = affitto_consigliato_mensile - rata_mensile;
+            // MODE: INVESTIMENTO (Messo a Rendita)
+            document.getElementById('badge_modalita').innerText = 'Messo a Rendita';
+            document.getElementById('badge_modalita').className = 'badge bg-success';
+
+            const affitto_lordo_mensile = parseFloat(document.getElementById('in_affitto_richiesto').value) || 0;
+            const regime_fiscale = document.getElementById('in_regime_fiscale_affitto').value;
+            const spese_gestione_pct = (parseFloat(document.getElementById('in_spese_gestione_pct').value) || 0) / 100;
+
+            const affitto_lordo_annuo = affitto_lordo_mensile * 12;
+
+            // Calcolo Tasse Locazione
+            let aliquota_tasse = 0.21;
+            if (regime_fiscale === 'cedolare_10') aliquota_tasse = 0.10;
+            if (regime_fiscale === 'irpef_35') aliquota_tasse = 0.35;
+
+            const tasse_locazione_annue = affitto_lordo_annuo * aliquota_tasse;
+            const spese_gestione_annue = affitto_lordo_annuo * spese_gestione_pct;
+
+            // Incasso Netto Proprietario (prima del mutuo)
+            const incasso_netto_annuo = affitto_lordo_annuo - tasse_locazione_annue - imu_annua - spese_gestione_annue;
+            const incasso_netto_mensile = incasso_netto_annuo / 12;
+
+            // Cash Flow Netto Finale (dopo rata mutuo)
+            const cash_flow_mensile_netto = incasso_netto_mensile - rata_mensile;
+            const cash_flow_annuo_netto = cash_flow_mensile_netto * 12;
+
+            // Rendimento Netto % (Cap Rate) su Capitale Investito
+            const rendimento_netto_pct = capitale_totale_necessario > 0 ? (incasso_netto_annuo / capitale_totale_necessario) * 100 : 0;
+
+            // Payback Period (In quanti anni rientro del capitale iniziale impiegato)
+            let anni_payback = incasso_netto_annuo > 0 ? (capitale_totale_necessario / incasso_netto_annuo) : 0;
+
+            document.getElementById('label_kpi_4').innerText = 'Rientro Investimento';
+            document.getElementById('sub_kpi_4').innerText = 'Payback Period';
+            document.getElementById('out_kpi_4').innerText = anni_payback > 0 ? `${anni_payback.toFixed(1)} Anni` : 'N/D';
 
             boxDinamico.innerHTML = `
                 <div class="summary-box summary-info">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong><i class="bi bi-tag text-info me-1"></i> Affitto Canone di Mercato Suggerito</strong>
-                            <strong class="text-info">${formatEur(affitto_consigliato_mensile)} / mese</strong>
+                            <strong><i class="bi bi-calculator text-info me-1"></i> Dettaglio Flusso Netto Annuo Locazione</strong>
+                            <strong class="text-info">${formatEur(incasso_netto_annuo)} / anno</strong>
                         </div>
-                        <small class="text-muted">Basato sui dati storici di locazione per la zona di ${citta} (${(datiCitta.yield_affitto*100).toFixed(1)}% lordo annuo).</small>
+                        <small class="text-muted d-block">
+                            + Affitto Lordo: <b>${formatEur(affitto_lordo_annuo)}</b><br>
+                            - Tasse Locazione (${(aliquota_tasse*100).toFixed(0)}%): <b>-${formatEur(tasse_locazione_annue)}</b><br>
+                            - IMU Annua: <b>-${formatEur(imu_annua)}</b><br>
+                            - Spese Gestione &amp; Sfitto: <b>-${formatEur(spese_gestione_annue)}</b>
+                        </small>
                     </div>
                 </div>
                 <div class="summary-box summary-success">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong><i class="bi bi-graph-up-arrow text-success me-1"></i> ROI Lordo su Capitale Invertito</strong>
-                            <strong class="text-success">${roi_lordo.toFixed(2)}% / anno</strong>
+                            <strong><i class="bi bi-graph-up-arrow text-success me-1"></i> Rendimento Netto % (Cap Rate Netto)</strong>
+                            <strong class="text-success">${rendimento_netto_pct.toFixed(2)}% / anno</strong>
                         </div>
-                        <small class="text-muted">Calcolato dividendo l'incasso annuo da affitto (${formatEur(incasso_annuo_lordo)}) sul Capitale Iniziale Impiegato (${formatEur(capitale_totale_necessario)}).</small>
+                        <small class="text-muted">Rendimento netto reale calcolato sul Capitale Iniziale Impiegato (${formatEur(capitale_totale_necessario)}).</small>
                     </div>
                 </div>
-                <div class="summary-box ${cash_flow_mensile >= 0 ? 'summary-success' : 'summary-danger'}">
+                <div class="summary-box ${cash_flow_mensile_netto >= 0 ? 'summary-success' : 'summary-danger'}">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong><i class="bi bi-cash-stack me-1"></i> Cash Flow Mensile Stimato (Affitto - Mutuo)</strong>
-                            <strong class="${cash_flow_mensile >= 0 ? 'text-success' : 'text-danger'}">${formatEur(cash_flow_mensile)} / mese</strong>
+                            <strong><i class="bi bi-cash-stack me-1"></i> Cash Flow Mensile Netto (Tasse + Mutuo inclusi)</strong>
+                            <strong class="${cash_flow_mensile_netto >= 0 ? 'text-success' : 'text-danger'}">${formatEur(cash_flow_mensile_netto)} / mese</strong>
                         </div>
-                        <small class="text-muted">Differenza tra l'affitto incassato (${formatEur(affitto_consigliato_mensile)}) e la rata del mutuo (${formatEur(rata_mensile)}).</small>
+                        <small class="text-muted">Somma effettiva che ti rimane in tasca ogni mese dopo aver pagato tutte le tasse, l'IMU, la manutenzione e la rata del mutuo (${formatEur(rata_mensile)}).</small>
                     </div>
                 </div>
             `;
         }
 
-        // 6. Feedback Liquidità (Banner riprogettato per leggibilità nitida)
+        // 6. Feedback Liquidità Iniziale
         let feedbackHTML = '';
         if (liquidita_residua < 0) {
             feedbackHTML = `
@@ -611,7 +694,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         }
         document.getElementById('feedback_box').innerHTML = feedbackHTML;
 
-        // 7. Aggiornamento Grafico a Barre
+        // 7. Aggiornamento Grafico
         if (chartInstance) { chartInstance.destroy(); }
         const ctx = document.getElementById('balanceChart').getContext('2d');
         
@@ -624,8 +707,9 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             dataGrafico = [capitale_totale_necessario, totale_mutuo_pagato, affitto_evitato * 12 * durata_anni, valore_futuro_casa];
             coloriGrafico = ['#ffc107', '#dc3545', '#0dcaf0', '#198754'];
         } else {
-            labelsGrafico = ['Capitale Iniziale', 'Rata Mutuo / Mese', 'Affitto Incassato / Mese', 'Valore Casa Futuro'];
-            dataGrafico = [capitale_totale_necessario, rata_mensile, affitto_consigliato_mensile, valore_futuro_casa];
+            const affitto_lordo_mensile = parseFloat(document.getElementById('in_affitto_richiesto').value) || 0;
+            labelsGrafico = ['Capitale Iniziale', 'Rata Mutuo / Mese', 'Affitto Lordo / Mese', 'Valore Casa Futuro'];
+            dataGrafico = [capitale_totale_necessario, rata_mensile, affitto_lordo_mensile, valore_futuro_casa];
             coloriGrafico = ['#ffc107', '#dc3545', '#198754', '#4361ee'];
         }
 
@@ -672,6 +756,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
     // Inizializzazione
     window.onload = () => {
+        toggleModalita();
         aggiornaLavoriArredo();
         calcola();
     };
