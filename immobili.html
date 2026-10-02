@@ -92,7 +92,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
         .chart-container {
             position: relative;
-            height: 280px;
+            height: 290px;
             width: 100%;
         }
     </style>
@@ -124,7 +124,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 <text x="163" y="130" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" fill="#6c757d" letter-spacing="0.5">I tuoi Simulatori Finanziari</text>
             </svg>
         </a>
-        <p class="lead text-secondary mt-1 mb-0 fs-6">Real Estate Pro: Analisi Acquisto Casa, Tassazione, IMU e Rendimento Locazione</p>
+        <p class="lead text-secondary mt-1 mb-0 fs-6">Real Estate Pro: Analisi Acquisto Casa, Tassazione, IMU e Rendita Locazione</p>
     </div>
 </header>
 
@@ -357,7 +357,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         <div class="col-lg-7 mb-4">
             <div class="card h-100">
                 <div class="card-header text-primary d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-bar-chart-fill me-1"></i> Bilancio Operazione (<span id="out_durata_titolo">25</span> Anni)</span>
+                    <span><i class="bi bi-bar-chart-fill me-1"></i> Confronto Grandezze Totali (<span id="out_durata_titolo">25</span> Anni)</span>
                     <span class="badge bg-primary" id="badge_modalita">Dimora Personale</span>
                 </div>
                 <div class="card-body">
@@ -517,7 +517,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         let aliquota_costi_totali = pct_imposte + 0.05; // +5% Notaio, Agenzia (3%) e Istruttoria
         const costi_iniziali = prezzo_casa * aliquota_costi_totali;
 
-        // Calcolo IMU (Prima Casa = 0€; Seconda Casa = ~0.6% valore immobile/anno)
         let imu_annua = 0;
         if (tipologia === 'seconda_casa' || uso === 'investimento') {
             imu_annua = prezzo_casa * 0.006; 
@@ -555,6 +554,10 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         document.getElementById('out_arredo_val').innerText = formatEur(costo_arredo);
 
         const boxDinamico = document.getElementById('box_risultato_dinamico');
+
+        let labelsGrafico = [];
+        let dataGrafico = [];
+        let coloriGrafico = [];
 
         if (uso === 'personale') {
             document.getElementById('badge_modalita').innerText = 'Dimora Personale';
@@ -595,6 +598,11 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     </div>
                 </div>
             `;
+
+            labelsGrafico = ['Capitale Iniziale', 'Totale Mutuo Pagato', 'Affitto Evitato Totale', 'Valore Casa Futuro'];
+            dataGrafico = [capitale_totale_necessario, totale_mutuo_pagato, tot_affitto_evitato, valore_futuro_casa];
+            coloriGrafico = ['#ffc107', '#dc3545', '#0dcaf0', '#198754'];
+
         } else {
             // MODE: INVESTIMENTO (Messo a Rendita)
             document.getElementById('badge_modalita').innerText = 'Messo a Rendita';
@@ -605,6 +613,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             const spese_gestione_pct = (parseFloat(document.getElementById('in_spese_gestione_pct').value) || 0) / 100;
 
             const affitto_lordo_annuo = affitto_lordo_mensile * 12;
+            const tot_affitto_lordo_incassato = affitto_lordo_annuo * durata_anni;
 
             // Calcolo Tasse Locazione
             let aliquota_tasse = 0.21;
@@ -620,12 +629,11 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
             // Cash Flow Netto Finale (dopo rata mutuo)
             const cash_flow_mensile_netto = incasso_netto_mensile - rata_mensile;
-            const cash_flow_annuo_netto = cash_flow_mensile_netto * 12;
 
             // Rendimento Netto % (Cap Rate) su Capitale Investito
             const rendimento_netto_pct = capitale_totale_necessario > 0 ? (incasso_netto_annuo / capitale_totale_necessario) * 100 : 0;
 
-            // Payback Period (In quanti anni rientro del capitale iniziale impiegato)
+            // Payback Period
             let anni_payback = incasso_netto_annuo > 0 ? (capitale_totale_necessario / incasso_netto_annuo) : 0;
 
             document.getElementById('label_kpi_4').innerText = 'Rientro Investimento';
@@ -666,6 +674,11 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     </div>
                 </div>
             `;
+
+            // Grafico omogeneo con grandezze pluriennali totali
+            labelsGrafico = ['Capitale Iniziale', 'Totale Mutuo Pagato', 'Totale Affitto Incassato', 'Valore Casa Futuro'];
+            dataGrafico = [capitale_totale_necessario, totale_mutuo_pagato, tot_affitto_lordo_incassato, valore_futuro_casa];
+            coloriGrafico = ['#ffc107', '#dc3545', '#198754', '#4361ee'];
         }
 
         // 6. Feedback Liquidità Iniziale
@@ -697,21 +710,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         // 7. Aggiornamento Grafico
         if (chartInstance) { chartInstance.destroy(); }
         const ctx = document.getElementById('balanceChart').getContext('2d');
-        
-        let labelsGrafico = [];
-        let dataGrafico = [];
-        let coloriGrafico = [];
-
-        if (uso === 'personale') {
-            labelsGrafico = ['Capitale Iniziale', 'Mutuo Totale Pagato', 'Affitto Evitato', 'Valore Casa Futuro'];
-            dataGrafico = [capitale_totale_necessario, totale_mutuo_pagato, affitto_evitato * 12 * durata_anni, valore_futuro_casa];
-            coloriGrafico = ['#ffc107', '#dc3545', '#0dcaf0', '#198754'];
-        } else {
-            const affitto_lordo_mensile = parseFloat(document.getElementById('in_affitto_richiesto').value) || 0;
-            labelsGrafico = ['Capitale Iniziale', 'Rata Mutuo / Mese', 'Affitto Lordo / Mese', 'Valore Casa Futuro'];
-            dataGrafico = [capitale_totale_necessario, rata_mensile, affitto_lordo_mensile, valore_futuro_casa];
-            coloriGrafico = ['#ffc107', '#dc3545', '#198754', '#4361ee'];
-        }
 
         chartInstance = new Chart(ctx, {
             type: 'bar',
