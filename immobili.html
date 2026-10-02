@@ -60,7 +60,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             border-radius: 12px 12px 0 0 !important;
         }
         .section-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             margin-bottom: 12px;
             padding-bottom: 5px;
@@ -82,25 +82,11 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             justify-content: space-between;
             align-items: center;
         }
-        .summary-success { background-color: rgba(25, 135, 84, 0.1); border-left: 5px solid var(--success-color); }
-        .summary-danger { background-color: rgba(220, 53, 69, 0.1); border-left: 5px solid var(--danger-color); }
-        .summary-info { background-color: rgba(13, 202, 240, 0.1); border-left: 5px solid var(--info-color); }
-        .summary-warning { background-color: rgba(255, 193, 7, 0.15); border-left: 5px solid #ffc107; }
+        .summary-success { background-color: rgba(25, 135, 84, 0.08); border-left: 5px solid var(--success-color); }
+        .summary-danger { background-color: rgba(220, 53, 69, 0.08); border-left: 5px solid var(--danger-color); }
+        .summary-info { background-color: rgba(13, 202, 240, 0.08); border-left: 5px solid var(--info-color); }
+        .summary-warning { background-color: rgba(255, 193, 7, 0.12); border-left: 5px solid #ffc107; }
 
-        .advice-box {
-            background-color: #fff3cd;
-            border-left: 5px solid #ffc107;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 0.92rem;
-        }
-        .good-box {
-            background-color: #d1e7dd;
-            border-left: 5px solid #198754;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 0.92rem;
-        }
         .stat-value { font-size: 1.35rem; font-weight: 700; color: var(--primary); }
         .stat-label { font-size: 0.8rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 
@@ -194,7 +180,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 <div class="card-body">
                     
                     <!-- Sezione Profilo Acquisto -->
-                    <h5 class="section-title title-primary"><i class="bi bi-person-gear"></i> 1. Tipo Operazione &amp; Liquidità</h5>
+                    <h5 class="section-title title-primary"><i class="bi bi-person-gear me-1"></i> 1. Tipo Operazione &amp; Liquidità</h5>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label small fw-bold">Uso Immobile</label>
@@ -220,7 +206,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     </div>
 
                     <!-- Sezione Immobile -->
-                    <h5 class="section-title title-wants mt-4"><i class="bi bi-building"></i> 2. L'Immobile &amp; Zona</h5>
+                    <h5 class="section-title title-wants mt-4"><i class="bi bi-building me-1"></i> 2. L'Immobile &amp; Zona</h5>
                     <div class="row g-2 mb-3">
                         <div class="col-12">
                             <label class="form-label small fw-bold">Città / Mercato</label>
@@ -249,7 +235,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                         <div class="col-6">
                             <label class="form-label small fw-bold">Superficie (mq)</label>
                             <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" id="in_mq" value="75" oninput="calcola()">
+                                <input type="number" class="form-control" id="in_mq" value="75" oninput="aggiornaLavoriArredo(); calcola();">
                                 <span class="input-group-text">mq</span>
                             </div>
                         </div>
@@ -259,28 +245,38 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     </div>
 
                     <!-- Sezione Ristrutturazione & Arredamento -->
-                    <h5 class="section-title title-primary mt-4"><i class="bi bi-hammer"></i> 3. Lavori &amp; Arredamento</h5>
+                    <h5 class="section-title title-primary mt-4"><i class="bi bi-hammer me-1"></i> 3. Lavori &amp; Arredamento</h5>
                     <div class="row g-2 mb-3">
-                        <div class="col-12">
-                            <label class="form-label small fw-bold">Stima Lavori Ristrutturazione (€)</label>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Lavori Ristrutturazione</label>
+                            <select class="form-select form-select-sm" id="in_lavori_tipo" onchange="aggiornaLavoriArredo(); calcola();">
+                                <option value="parziale" selected>Parziale (~500 €/mq)</option>
+                                <option value="totale">Totale (~1.000 €/mq)</option>
+                                <option value="nessuna">Nessuna (0 €)</option>
+                                <option value="manuale">Personalizzata</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Costo Lavori (€)</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
-                                <input type="number" class="form-control" id="in_lavori" value="15000" step="1000" oninput="calcola()">
+                                <input type="number" class="form-control" id="in_lavori" value="37500" step="1000" oninput="setLavoriManuale(); calcola();">
                             </div>
                         </div>
                         <div class="col-6">
-                            <label class="form-label small fw-bold">Arredamento (Copertura)</label>
+                            <label class="form-label small fw-bold">Arredamento (Ambito)</label>
                             <select class="form-select form-select-sm" id="in_arredo_ambito" onchange="calcola()">
                                 <option value="totale" selected>Totale (Tutta casa)</option>
-                                <option value="parziale">Parziale (Solo cucina/bagno)</option>
+                                <option value="parziale">Parziale (Cucina/Bagno)</option>
                                 <option value="nessuno">Nessuno (Già arredata)</option>
                             </select>
                         </div>
                         <div class="col-6">
                             <label class="form-label small fw-bold">Qualità Arredo</label>
                             <select class="form-select form-select-sm" id="in_arredo_qualita" onchange="calcola()">
-                                <option value="standard" selected>Standard (~120 €/mq)</option>
-                                <option value="premium">Premium (~250 €/mq)</option>
+                                <option value="standard" selected>Standard (~300 €/mq)</option>
+                                <option value="premium">Premium (~600 €/mq)</option>
+                                <option value="lusso">Lusso (~1.200 €/mq)</option>
                             </select>
                         </div>
                         <div class="col-12 text-end">
@@ -289,7 +285,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     </div>
 
                     <!-- Sezione Mutuo -->
-                    <h5 class="section-title title-wants mt-4"><i class="bi bi-bank"></i> 4. Dettagli Mutuo</h5>
+                    <h5 class="section-title title-wants mt-4"><i class="bi bi-bank me-1"></i> 4. Dettagli Mutuo</h5>
                     <div class="row g-2 mb-3">
                         <div class="col-4">
                             <label class="form-label small fw-bold">Anticipo</label>
@@ -331,7 +327,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         <div class="col-lg-7 mb-4">
             <div class="card h-100">
                 <div class="card-header text-primary d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-bar-chart-fill"></i> Bilancio Operazione (<span id="out_durata_titolo">25</span> Anni)</span>
+                    <span><i class="bi bi-bar-chart-fill me-1"></i> Bilancio Operazione (<span id="out_durata_titolo">25</span> Anni)</span>
                     <span class="badge bg-primary" id="badge_modalita">Dimora Personale</span>
                 </div>
                 <div class="card-body">
@@ -347,7 +343,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                         <div class="summary-box summary-warning">
                             <div class="w-100">
                                 <div class="d-flex justify-content-between mb-1">
-                                    <strong><i class="bi bi-wallet2 text-dark"></i> Liquidità Iniziale per il Rogito</strong>
+                                    <strong><i class="bi bi-wallet2 text-dark me-1"></i> Liquidità Iniziale per il Rogito</strong>
                                     <strong class="text-dark" id="out_totale_capitale_box">€ 0</strong>
                                 </div>
                                 <small class="text-muted">Comprende: Anticipo (<span id="out_anticipo_val">€ 0</span>), Imposte &amp; Notai (<span id="out_imposte_val">€ 0</span>), Lavori (<span id="out_lavori_val">€ 0</span>) e Arredo (<span id="out_arredo_val">€ 0</span>).</small>
@@ -361,6 +357,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
                     </div>
 
+                    <!-- Banner Alert Liquidità Iniziale (Leggibile e ad alto contrasto) -->
                     <div id="feedback_box" class="mt-3">
                         <!-- Consigli e alert iniettati via JS -->
                     </div>
@@ -372,7 +369,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 </div>
 
 <script>
-    // Database citta italiane (Prezzi mq, Apprezzamento annuo storico, Rendimento medio da affitto)
+    // Database citta italiane
     const dbCitta = {
         "Milano": { prezzo_mq: 5200, app_annuo: 0.020, yield_affitto: 0.048 },
         "Roma": { prezzo_mq: 3300, app_annuo: 0.010, yield_affitto: 0.052 },
@@ -397,11 +394,29 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         const dati = dbCitta[citta];
         const mq = parseFloat(document.getElementById('in_mq').value) || 75;
         
-        // Imposta prezzo suggerito
         document.getElementById('in_prezzo').value = Math.round(dati.prezzo_mq * mq);
-        
         document.getElementById('info_citta').innerHTML = `Prezzo medio: ${formatEur(dati.prezzo_mq)}/mq | Rendimento medio affitto: ${(dati.yield_affitto*100).toFixed(1)}%`;
+        
+        aggiornaLavoriArredo();
         calcola();
+    }
+
+    function aggiornaLavoriArredo() {
+        const mq = parseFloat(document.getElementById('in_mq').value) || 0;
+        const tipoLavori = document.getElementById('in_lavori_tipo').value;
+        const inputLavori = document.getElementById('in_lavori');
+
+        if (tipoLavori === 'totale') {
+            inputLavori.value = Math.round(mq * 1000);
+        } else if (tipoLavori === 'parziale') {
+            inputLavori.value = Math.round(mq * 500);
+        } else if (tipoLavori === 'nessuna') {
+            inputLavori.value = 0;
+        }
+    }
+
+    function setLavoriManuale() {
+        document.getElementById('in_lavori_tipo').value = 'manuale';
     }
 
     function PMT(rate_per_period, number_of_payments, present_value) {
@@ -444,8 +459,11 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             document.getElementById('sub_kpi_4').innerText = 'A fine mutuo';
         }
 
-        // 1. Stima Arredamento
-        let costo_mq_arredo = arredo_qualita === 'premium' ? 250 : 120;
+        // 1. Stima Arredamento (Standard: 300 €/mq, Premium: 600 €/mq, Lusso: 1200 €/mq)
+        let costo_mq_arredo = 300;
+        if (arredo_qualita === 'premium') costo_mq_arredo = 600;
+        if (arredo_qualita === 'lusso') costo_mq_arredo = 1200;
+
         let fattore_ambito = 1.0;
         if (arredo_ambito === 'parziale') fattore_ambito = 0.4;
         if (arredo_ambito === 'nessuno') fattore_ambito = 0;
@@ -454,9 +472,8 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         document.getElementById('out_costo_arredo_preview').innerText = formatEur(costo_arredo);
 
         // 2. Imposte e Costi Accessori Compravendita
-        // Prima casa: Imposta registro 2% | Seconda casa: Imposta registro 9%
         let pct_imposte = tipologia === 'prima_casa' ? 0.02 : 0.09;
-        let aliquota_costi_totali = pct_imposte + 0.05; // +5% per Notaio, Agenzia (3%) e Perizia/Istruttoria
+        let aliquota_costi_totali = pct_imposte + 0.05; // +5% per Notaio, Agenzia (3%) e Perizia
         const costi_iniziali = prezzo_casa * aliquota_costi_totali;
 
         document.getElementById('out_imposte_tag').innerText = tipologia === 'prima_casa' ? 'Prima Casa (Reg. 2% + Notai/Agenzia)' : 'Seconda Casa (Reg. 9% + Notai/Agenzia)';
@@ -477,7 +494,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         const valore_futuro_casa = prezzo_casa * Math.pow((1 + datiCitta.app_annuo), durata_anni);
         const affitto_consigliato_mensile = (prezzo_casa * datiCitta.yield_affitto) / 12;
 
-        // Update KPIs
+        // Update KPIs Top
         document.getElementById('out_capitale_totale_necessario').innerText = formatEur(capitale_totale_necessario);
         document.getElementById('out_rata').innerText = formatEur(rata_mensile);
         document.getElementById('out_costi_iniziali').innerText = formatEur(costi_iniziali);
@@ -490,7 +507,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
         document.getElementById('out_durata_titolo').innerText = durata_anni;
 
-        // Aggiornamento Box Sintesi
+        // Aggiornamento Box Sintesi Capitale
         document.getElementById('out_totale_capitale_box').innerText = formatEur(capitale_totale_necessario);
         document.getElementById('out_anticipo_val').innerText = formatEur(anticipo_euro);
         document.getElementById('out_imposte_val').innerText = formatEur(costi_iniziali);
@@ -501,13 +518,13 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         const boxDinamico = document.getElementById('box_risultato_dinamico');
         if (uso === 'personale') {
             const tot_affitto_evitato = affitto_evitato * 12 * durata_anni;
-            const tot_uscite = capitale_totale_necessario + totale_mutuo_pagato - anticipo_euro; // evita di contare anticipo 2 volte
+            const tot_uscite = capitale_totale_necessario + totale_mutuo_pagato - anticipo_euro;
 
             boxDinamico.innerHTML = `
                 <div class="summary-box summary-danger">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong><i class="bi bi-arrow-down-circle text-danger"></i> Uscita Totale per l'Acquisto (<span class="durata_text">${durata_anni}</span> Anni)</strong>
+                            <strong><i class="bi bi-arrow-down-circle text-danger me-1"></i> Uscita Totale per l'Acquisto (${durata_anni} Anni)</strong>
                             <strong class="text-danger">${formatEur(tot_uscite)}</strong>
                         </div>
                         <small class="text-muted">Somma di Capitale Iniziale (${formatEur(capitale_totale_necessario)}) + tutte le rate del mutuo (${formatEur(totale_mutuo_pagato)}).</small>
@@ -516,7 +533,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 <div class="summary-box summary-info">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong><i class="bi bi-shield-check text-info"></i> Risparmio Affitto Evitato Totale</strong>
+                            <strong><i class="bi bi-shield-check text-info me-1"></i> Risparmio Affitto Evitato Totale</strong>
                             <strong class="text-info">${formatEur(tot_affitto_evitato)}</strong>
                         </div>
                         <small class="text-muted">Somma degli affitti che NON verserai a fondo perduto in ${durata_anni} anni.</small>
@@ -525,7 +542,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 <div class="summary-box summary-success">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong><i class="bi bi-house-up text-success"></i> Valore Finale dell'Immobile</strong>
+                            <strong><i class="bi bi-house-up text-success me-1"></i> Valore Finale dell'Immobile</strong>
                             <strong class="text-success">${formatEur(valore_futuro_casa)}</strong>
                         </div>
                         <small class="text-muted">Stima valore di patrimonio accumulato a ${citta} tra ${durata_anni} anni.</small>
@@ -533,7 +550,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 </div>
             `;
         } else {
-            // Investimento
             const incasso_annuo_lordo = affitto_consigliato_mensile * 12;
             const roi_lordo = (incasso_annuo_lordo / capitale_totale_necessario) * 100;
             const cash_flow_mensile = affitto_consigliato_mensile - rata_mensile;
@@ -542,7 +558,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 <div class="summary-box summary-info">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong><i class="bi bi-tag text-info"></i> Affitto Canone di Mercato Suggerito</strong>
+                            <strong><i class="bi bi-tag text-info me-1"></i> Affitto Canone di Mercato Suggerito</strong>
                             <strong class="text-info">${formatEur(affitto_consigliato_mensile)} / mese</strong>
                         </div>
                         <small class="text-muted">Basato sui dati storici di locazione per la zona di ${citta} (${(datiCitta.yield_affitto*100).toFixed(1)}% lordo annuo).</small>
@@ -551,7 +567,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 <div class="summary-box summary-success">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong><i class="bi bi-graph-up-arrow text-success"></i> ROI Lordo su Capitale Invertito</strong>
+                            <strong><i class="bi bi-graph-up-arrow text-success me-1"></i> ROI Lordo su Capitale Invertito</strong>
                             <strong class="text-success">${roi_lordo.toFixed(2)}% / anno</strong>
                         </div>
                         <small class="text-muted">Calcolato dividendo l'incasso annuo da affitto (${formatEur(incasso_annuo_lordo)}) sul Capitale Iniziale Impiegato (${formatEur(capitale_totale_necessario)}).</small>
@@ -560,7 +576,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 <div class="summary-box ${cash_flow_mensile >= 0 ? 'summary-success' : 'summary-danger'}">
                     <div class="w-100">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong><i class="bi bi-cash-stack"></i> Cash Flow Mensile Stimato (Affitto - Mutuo)</strong>
+                            <strong><i class="bi bi-cash-stack me-1"></i> Cash Flow Mensile Stimato (Affitto - Mutuo)</strong>
                             <strong class="${cash_flow_mensile >= 0 ? 'text-success' : 'text-danger'}">${formatEur(cash_flow_mensile)} / mese</strong>
                         </div>
                         <small class="text-muted">Differenza tra l'affitto incassato (${formatEur(affitto_consigliato_mensile)}) e la rata del mutuo (${formatEur(rata_mensile)}).</small>
@@ -569,17 +585,28 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             `;
         }
 
-        // 6. Feedback Liquidità e Sostenibilità
+        // 6. Feedback Liquidità (Banner riprogettato per leggibilità nitida)
         let feedbackHTML = '';
         if (liquidita_residua < 0) {
-            feedbackHTML = `<div class="advice-box border-danger bg-danger text-white bg-opacity-10 text-dark">
-                <strong><i class="bi bi-exclamation-triangle-fill text-danger"></i> Liquidità Insufficiente!</strong><br>
-                Ti mancano <b>${formatEur(Math.abs(liquidita_residua))}</b> per coprire l'anticipo, le tasse, i lavori e l'arredo. Aumenta la liquidità disponibile o riduci la percentuale di anticipo/lavori.
+            feedbackHTML = `
+            <div class="p-3 rounded-3 border-start border-4 border-danger bg-danger bg-opacity-10 text-dark mb-3">
+                <div class="d-flex align-items-center mb-1 text-danger fw-bold fs-6">
+                    <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i> Liquidità Iniziale Insufficiente!
+                </div>
+                <p class="mb-0 small text-secondary">
+                    Ti mancano <strong class="text-danger">${formatEur(Math.abs(liquidita_residua))}</strong> per coprire l'anticipo, le imposte/notai, i lavori e l'arredamento al momento del rogito.<br>
+                    <strong>Soluzione:</strong> Aumenta la tua liquidità iniziale, riduci la quota di anticipo del mutuo o riduci l'entità dei lavori/arredo.
+                </p>
             </div>`;
         } else {
-            feedbackHTML = `<div class="good-box">
-                <strong><i class="bi bi-check-circle-fill"></i> Copertura Iniziale OK!</strong><br>
-                Hai liquidità sufficiente per coprire tutti i costi di ingresso al rogitare. Ti rimarrà un fondo di riserva personale di <b>${formatEur(liquidita_residua)}</b>.
+            feedbackHTML = `
+            <div class="p-3 rounded-3 border-start border-4 border-success bg-success bg-opacity-10 text-dark mb-3">
+                <div class="d-flex align-items-center mb-1 text-success fw-bold fs-6">
+                    <i class="bi bi-check-circle-fill me-2 fs-5"></i> Copertura Iniziale OK!
+                </div>
+                <p class="mb-0 small text-secondary">
+                    Hai liquidità sufficiente per coprire tutti i costi necessari per il rogito e i lavori. Ti rimarrà un fondo di riserva personale di <strong class="text-success">${formatEur(liquidita_residua)}</strong>.
+                </p>
             </div>`;
         }
         document.getElementById('feedback_box').innerHTML = feedbackHTML;
@@ -645,6 +672,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
     // Inizializzazione
     window.onload = () => {
+        aggiornaLavoriArredo();
         calcola();
     };
 </script>
