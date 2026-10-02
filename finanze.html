@@ -19,7 +19,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Finance Pro - Budget Planner</title>
+    <title>Personal Finance Pro - Budget Planner 50/30/20</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -38,6 +38,14 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             background-color: var(--bg-light);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
+        /* Header Bianco Unificato con Logo */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
         .card {
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -51,18 +59,20 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             border-radius: 12px 12px 0 0 !important;
         }
         .section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             margin-bottom: 15px;
             padding-bottom: 5px;
             border-bottom: 2px solid #eee;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .title-needs { color: var(--needs); border-bottom-color: var(--needs); }
         .title-wants { color: var(--wants); border-bottom-color: var(--wants); }
         .title-savings { color: var(--savings); border-bottom-color: var(--savings); }
         
         .input-group-text { background-color: white; color: #6c757d; }
-        .form-control:focus { box-shadow: none; border-color: var(--primary); }
+        .form-control:focus, .form-select:focus { box-shadow: none; border-color: var(--primary); }
         
         .summary-box {
             padding: 15px;
@@ -72,9 +82,9 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             justify-content: space-between;
             align-items: center;
         }
-        .summary-needs { background-color: rgba(247, 37, 133, 0.1); border-left: 5px solid var(--needs); }
-        .summary-wants { background-color: rgba(114, 9, 183, 0.1); border-left: 5px solid var(--wants); }
-        .summary-savings { background-color: rgba(76, 201, 240, 0.1); border-left: 5px solid var(--savings); }
+        .summary-needs { background-color: rgba(247, 37, 133, 0.08); border-left: 5px solid var(--needs); }
+        .summary-wants { background-color: rgba(114, 9, 183, 0.08); border-left: 5px solid var(--wants); }
+        .summary-savings { background-color: rgba(76, 201, 240, 0.12); border-left: 5px solid var(--savings); }
         
         .progress { height: 12px; border-radius: 6px; }
         .advice-box {
@@ -82,59 +92,137 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             border-left: 5px solid #ffc107;
             padding: 15px;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
         .good-box {
             background-color: #d1e7dd;
             border-left: 5px solid #198754;
             padding: 15px;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
         .status-badge {
             font-size: 0.75rem;
             padding: 4px 8px;
             border-radius: 12px;
+            font-weight: 600;
         }
         .status-ok { background: #d1e7dd; color: #0f5132; }
         .status-warning { background: #fff3cd; color: #664d03; }
         .status-danger { background: #f8d7da; color: #842029; }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .stat-value { font-size: 1.35rem; font-weight: 700; }
+        .stat-label { font-size: 0.78rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold" style="color: var(--primary);"><i class="bi bi-wallet2"></i> Budget & Finance Pro</h1>
-        <p class="lead text-secondary">Analizza le tue spese e ottimizza il budget con la Regola del 50/30/20</p>
+<!-- Header con Logo SVG Integrato -->
+<header class="py-3 mb-4">
+    <div class="container text-center">
+        <a href="index.html" class="text-decoration-none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" height="60" style="max-width: 280px;">
+                <defs>
+                    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#0d6efd;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#0a58ca;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#198754;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#20c997;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M 50 25 L 110 25 L 130 80 L 90 135 L 50 135 Z" fill="url(#shieldGrad)" opacity="0.95" />
+                <path d="M 50 25 L 90 25 L 110 80 L 70 135 L 30 80 Z" fill="url(#shieldGrad)" opacity="0.8" />
+                <rect x="52" y="90" width="14" height="30" rx="3" fill="white" opacity="0.9" />
+                <rect x="74" y="70" width="14" height="50" rx="3" fill="white" opacity="0.9" />
+                <rect x="96" y="45" width="14" height="75" rx="3" fill="url(#accentGrad)" />
+                <text x="160" y="75" font-family="'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="800" fill="#2b2d42">SimPro</text>
+                <text x="163" y="105" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#0d6efd" letter-spacing="2">FINANCE &amp; REAL ESTATE</text>
+                <text x="163" y="130" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" fill="#6c757d" letter-spacing="0.5">I tuoi Simulatori Finanziari</text>
+            </svg>
+        </a>
+        <p class="lead text-secondary mt-1 mb-0 fs-6">Personal Finance Pro: Pianificazione Budget 50/30/20 &amp; Fondo Emergenza</p>
+    </div>
+</header>
+
+<div class="container pb-5">
+
+    <!-- KPI Header Top -->
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-md-3">
+            <div class="stat-card border-start border-4 border-primary">
+                <div class="stat-label">Entrata Netta Media</div>
+                <div class="stat-value text-primary" id="out_budget_mensile">€ 0</div>
+                <small class="text-muted" style="font-size: 0.72rem;">Al mese</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card border-start border-4 border-danger">
+                <div class="stat-label">Spese Totali Inserite</div>
+                <div class="stat-value text-danger" id="out_spese_totali">€ 0</div>
+                <small class="text-muted" style="font-size: 0.72rem;" id="out_pct_speso">0% del budget</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card border-start border-4 border-success">
+                <div class="stat-label">Risparmio Netto / Mese</div>
+                <div class="stat-value text-success" id="out_risparmio_totale">€ 0</div>
+                <small class="text-muted" style="font-size: 0.72rem;" id="out_pct_risparmio">0% accantonato</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card border-start border-4 border-info">
+                <div class="stat-label">Copertura Fondo Emergenza</div>
+                <div class="stat-value text-info" id="out_runway_mesi">0.0 Mesi</div>
+                <small class="text-muted" style="font-size: 0.72rem;">Autonomia spese primarie</small>
+            </div>
+        </div>
     </div>
 
-    <!-- Sezione Entrate -->
+    <!-- Sezione Configurazione Entrate & Strategia -->
     <div class="card mb-4 border-primary border-2">
+        <div class="card-header bg-white text-primary fw-bold">
+            <i class="bi bi-cash-coin me-1"></i> Configura Entrate e Strategia di Budgeting
+        </div>
         <div class="card-body">
-            <div class="row align-items-center">
+            <div class="row align-items-center g-3">
                 <div class="col-md-3">
-                    <h5 class="mb-0 text-primary"><i class="bi bi-cash-coin"></i> Le tue Entrate</h5>
-                    <small class="text-muted">Inserisci il reddito netto</small>
-                </div>
-                <div class="col-md-3 mt-3 mt-md-0">
-                    <label class="form-label fw-bold">Stipendio Netto Mensile</label>
-                    <div class="input-group">
+                    <label class="form-label small fw-bold">Stipendio Netto Mensile (€)</label>
+                    <div class="input-group input-group-sm">
                         <span class="input-group-text">€</span>
-                        <input type="number" class="form-control fw-bold text-primary" id="in_stipendio" value="2000" step="100" oninput="calculateBudget()">
+                        <input type="number" class="form-control fw-bold text-primary" id="in_stipendio" value="2000" step="50" oninput="calculateBudget()">
                     </div>
                 </div>
-                <div class="col-md-3 mt-3 mt-md-0">
-                    <label class="form-label fw-bold">N. Mensilità (es. 13 o 14)</label>
-                    <select class="form-select" id="in_mensilita" onchange="calculateBudget()">
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold">Mensilità</label>
+                    <select class="form-select form-select-sm" id="in_mensilita" onchange="calculateBudget()">
                         <option value="12">12 Mensilità</option>
                         <option value="13" selected>13 Mensilità</option>
                         <option value="14">14 Mensilità</option>
                     </select>
                 </div>
-                <div class="col-md-3 mt-3 mt-md-0 text-center text-md-end">
-                    <div class="text-muted small">Budget Medio Mensile Disponibile:</div>
-                    <h3 class="fw-bold text-success mb-0" id="out_budget_mensile">€ 2.166</h3>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Entrate Extra / Secondarie (€/m)</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">€</span>
+                        <input type="number" class="form-control text-success fw-bold" id="in_extra" value="0" step="50" oninput="calculateBudget()">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Modello Strategico</label>
+                    <select class="form-select form-select-sm fw-bold" id="in_strategia" onchange="calculateBudget()">
+                        <option value="50_30_20" selected>Classico (50% Necessità / 30% Desideri / 20% Risparmio)</option>
+                        <option value="40_20_40">FIRE / Risparmio Aggressivo (40% Nec. / 20% Des. / 40% Risp.)</option>
+                        <option value="60_20_20">Flessibile / Famiglia (60% Nec. / 20% Des. / 20% Risp.)</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -142,80 +230,87 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
     <div class="row">
         <!-- Colonna Inserimento Spese -->
-        <div class="col-lg-7">
-            <div class="card">
+        <div class="col-lg-7 mb-4">
+            <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-list-check"></i> Le tue Spese Mensili</span>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="loadOptimal()"><i class="bi bi-magic"></i> Auto-compila Ottimale</button>
+                    <span><i class="bi bi-list-check me-1"></i> Le tue Spese Mensili</span>
+                    <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="loadOptimal()"><i class="bi bi-magic me-1"></i> Compila Esempio Ottimale</button>
                 </div>
                 <div class="card-body">
                     
-                    <!-- 50% NECESSITA' -->
-                    <h5 class="section-title title-needs"><i class="bi bi-house-door"></i> Necessità (Target 50%)</h5>
-                    <div class="row mb-4">
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label small">Abitazione (Affitto/Mutuo/Condominio)</label>
+                    <!-- NECESSITA' -->
+                    <h5 class="section-title title-needs"><i class="bi bi-house-door me-1"></i> Spese Primarie / Necessità (<span class="target_needs_text">50%</span>)</h5>
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small">Casa (Affitto / Mutuo / Condominio)</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-needs" id="exp_abitazione" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
-                        <div class="col-md-6 mb-2">
+                        <div class="col-md-6">
                             <label class="form-label small">Utenze (Luce, Gas, Internet, TARI)</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-needs" id="exp_utenze" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
-                        <div class="col-md-6 mb-2">
+                        <div class="col-md-6">
                             <label class="form-label small">Spesa Alimentare e Supermercato</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-needs" id="exp_spesa" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label small">Auto/Trasporti (Rata, Benzina, Ass.)</label>
+                        <div class="col-md-6">
+                            <label class="form-label small">Trasporti / Auto (Rata, Carburante, Ass.)</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-needs" id="exp_trasporti" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label small">Cura Persona (Salute, Igiene, Farmacia)</label>
+                        <div class="col-md-6">
+                            <label class="form-label small">Salute, Farmacia e Igiene Personale</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-needs" id="exp_salute" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">Finanziamenti / Rate Prestiti Breve</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">€</span>
+                                <input type="number" class="form-control exp-needs" id="exp_debiti" value="0" oninput="calculateBudget()">
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- 30% DESIDERI -->
-                    <h5 class="section-title title-wants"><i class="bi bi-bag-heart"></i> Desideri e Svago (Target 30%)</h5>
-                    <div class="row mb-4">
-                        <div class="col-md-6 mb-2">
+                    <!-- DESIDERI -->
+                    <h5 class="section-title title-wants"><i class="bi bi-bag-heart me-1"></i> Desideri e Svago (<span class="target_wants_text">30%</span>)</h5>
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-6">
                             <label class="form-label small">Svago (Ristoranti, Aperitivi, Uscite)</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-wants" id="exp_svago" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label small">Shopping (Abbigliamento)</label>
+                        <div class="col-md-6">
+                            <label class="form-label small">Shopping &amp; Abbigliamento</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-wants" id="exp_shop_vesti" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label small">Shopping Altro & Abbonamenti (Netflix..)</label>
+                        <div class="col-md-6">
+                            <label class="form-label small">Abbonamenti (Streaming, Palestra..)</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-wants" id="exp_shop_altro" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label small">Budget Vacanze (Quota Mensile)</label>
+                        <div class="col-md-6">
+                            <label class="form-label small">Budget Vacanze (Accantonamento/Mese)</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-wants" id="exp_vacanze" value="0" oninput="calculateBudget()">
@@ -223,28 +318,35 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                         </div>
                     </div>
 
-                    <!-- 20% RISPARMIO -->
-                    <h5 class="section-title title-savings"><i class="bi bi-piggy-bank"></i> Risparmio e Investimenti (Target 20%)</h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label small">Quota Imprevisti (Fondo Emergenza)</label>
+                    <!-- RISPARMIO -->
+                    <h5 class="section-title title-savings"><i class="bi bi-piggy-bank me-1"></i> Risparmio e Investimenti (<span class="target_savings_text">20%</span>)</h5>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small">Quota Fondo Emergenza / Mese</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-savings" id="exp_emergenza" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label small">Risparmio a Riserva (Breve termine)</label>
+                        <div class="col-md-6">
+                            <label class="form-label small">Risparmio Progetti Breve Termine</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-savings" id="exp_riserva" value="0" oninput="calculateBudget()">
                             </div>
                         </div>
-                        <div class="col-md-12 mb-2">
-                            <label class="form-label small">Investimenti (PAC, Fondo Pensione, Azioni)</label>
+                        <div class="col-md-6">
+                            <label class="form-label small">Investimenti (PAC ETF, Fondo Pensione)</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">€</span>
                                 <input type="number" class="form-control exp-savings" id="exp_investimenti" value="0" oninput="calculateBudget()">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-info">Fondo Emergenza Attuale Accumulato</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">€</span>
+                                <input type="number" class="form-control fw-bold border-info" id="in_fondo_accumulato" value="5000" step="500" oninput="calculateBudget()">
                             </div>
                         </div>
                     </div>
@@ -254,19 +356,18 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         </div>
 
         <!-- Colonna Analisi & Grafici -->
-        <div class="col-lg-5">
+        <div class="col-lg-5 mb-4">
             <div class="card h-100">
                 <div class="card-header text-primary">
-                    <i class="bi bi-pie-chart"></i> Analisi Budget 50/30/20
+                    <i class="bi bi-pie-chart me-1"></i> Analisi Allocazione Budget
                 </div>
                 <div class="card-body">
                     
                     <!-- Grafico Donut -->
                     <div class="mb-4" style="height: 220px; position: relative;">
                         <canvas id="budgetChart"></canvas>
-                        <!-- Center text over doughnut -->
                         <div id="chart-center-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                            <span class="d-block small text-muted">Avanzo / Deficit</span>
+                            <span class="d-block small text-muted fs-7">Avanzo / Deficit</span>
                             <strong class="fs-4" id="out_avanzo">€ 0</strong>
                         </div>
                     </div>
@@ -275,39 +376,39 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     <div class="summary-box summary-needs">
                         <div class="w-100">
                             <div class="d-flex justify-content-between mb-1">
-                                <strong>Necessità (50%)</strong>
-                                <span id="val_needs">€ 0 (0%)</span>
+                                <strong>Necessità (<span class="target_needs_text">50%</span>)</strong>
+                                <span id="val_needs" class="fw-bold">€ 0 (0%)</span>
                             </div>
                             <div class="progress">
                                 <div id="prog_needs" class="progress-bar" style="background-color: var(--needs); width: 0%"></div>
                             </div>
-                            <div class="text-end mt-1"><span id="badge_needs" class="status-badge">Ottimale</span></div>
+                            <div class="text-end mt-1"><span id="badge_needs" class="status-badge">In linea</span></div>
                         </div>
                     </div>
 
                     <div class="summary-box summary-wants">
                         <div class="w-100">
                             <div class="d-flex justify-content-between mb-1">
-                                <strong>Desideri (30%)</strong>
-                                <span id="val_wants">€ 0 (0%)</span>
+                                <strong>Desideri (<span class="target_wants_text">30%</span>)</strong>
+                                <span id="val_wants" class="fw-bold">€ 0 (0%)</span>
                             </div>
                             <div class="progress">
                                 <div id="prog_wants" class="progress-bar" style="background-color: var(--wants); width: 0%"></div>
                             </div>
-                            <div class="text-end mt-1"><span id="badge_wants" class="status-badge">Ottimale</span></div>
+                            <div class="text-end mt-1"><span id="badge_wants" class="status-badge">In linea</span></div>
                         </div>
                     </div>
 
                     <div class="summary-box summary-savings">
                         <div class="w-100">
                             <div class="d-flex justify-content-between mb-1">
-                                <strong>Risparmio & Invest. (20%)</strong>
-                                <span id="val_savings">€ 0 (0%)</span>
+                                <strong>Risparmio &amp; Invest. (<span class="target_savings_text">20%</span>)</strong>
+                                <span id="val_savings" class="fw-bold">€ 0 (0%)</span>
                             </div>
                             <div class="progress">
                                 <div id="prog_savings" class="progress-bar" style="background-color: var(--savings); width: 0%"></div>
                             </div>
-                            <div class="text-end mt-1"><span id="badge_savings" class="status-badge">Ottimale</span></div>
+                            <div class="text-end mt-1"><span id="badge_savings" class="status-badge">In linea</span></div>
                         </div>
                     </div>
 
@@ -325,7 +426,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 <script>
     let chartInstance = null;
 
-    // Formatter valuta
     const formatEur = (num) => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(num);
 
     function sumInputs(className) {
@@ -338,49 +438,86 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
     // Auto-compila con valori ottimali secondo il budget
     function loadOptimal() {
-        const stipendio = parseFloat(document.getElementById('in_stipendio').value) || 0;
-        const mensilita = parseInt(document.getElementById('in_mensilita').value) || 12;
-        const budgetMensile = (stipendio * mensilita) / 12;
+        const stipendio = parseFloat(document.getElementById('in_stipendio').value) || 2000;
+        const mensilita = parseInt(document.getElementById('in_mensilita').value) || 13;
+        const extra = parseFloat(document.getElementById('in_extra').value) || 0;
+        const budgetMensile = ((stipendio * mensilita) / 12) + extra;
 
-        // Distribuzione Ottimale Educazione Finanziaria
-        document.getElementById('exp_abitazione').value = Math.round(budgetMensile * 0.25);
-        document.getElementById('exp_utenze').value = Math.round(budgetMensile * 0.05);
-        document.getElementById('exp_spesa').value = Math.round(budgetMensile * 0.10);
-        document.getElementById('exp_trasporti').value = Math.round(budgetMensile * 0.05);
-        document.getElementById('exp_salute').value = Math.round(budgetMensile * 0.05);
+        const strat = document.getElementById('in_strategia').value;
+        let t_needs = 0.50, t_wants = 0.30, t_savings = 0.20;
 
-        document.getElementById('exp_svago').value = Math.round(budgetMensile * 0.10);
-        document.getElementById('exp_shop_vesti').value = Math.round(budgetMensile * 0.05);
-        document.getElementById('exp_shop_altro').value = Math.round(budgetMensile * 0.05);
-        document.getElementById('exp_vacanze').value = Math.round(budgetMensile * 0.10);
+        if (strat === '40_20_40') { t_needs = 0.40; t_wants = 0.20; t_savings = 0.40; }
+        if (strat === '60_20_20') { t_needs = 0.60; t_wants = 0.20; t_savings = 0.20; }
 
-        document.getElementById('exp_emergenza').value = Math.round(budgetMensile * 0.05);
-        document.getElementById('exp_riserva').value = Math.round(budgetMensile * 0.05);
-        document.getElementById('exp_investimenti').value = Math.round(budgetMensile * 0.10);
+        // Necessità
+        document.getElementById('exp_abitazione').value = Math.round(budgetMensile * (t_needs * 0.50));
+        document.getElementById('exp_utenze').value = Math.round(budgetMensile * (t_needs * 0.12));
+        document.getElementById('exp_spesa').value = Math.round(budgetMensile * (t_needs * 0.20));
+        document.getElementById('exp_trasporti').value = Math.round(budgetMensile * (t_needs * 0.10));
+        document.getElementById('exp_salute').value = Math.round(budgetMensile * (t_needs * 0.08));
+        document.getElementById('exp_debiti').value = 0;
+
+        // Desideri
+        document.getElementById('exp_svago').value = Math.round(budgetMensile * (t_wants * 0.35));
+        document.getElementById('exp_shop_vesti').value = Math.round(budgetMensile * (t_wants * 0.25));
+        document.getElementById('exp_shop_altro').value = Math.round(budgetMensile * (t_wants * 0.15));
+        document.getElementById('exp_vacanze').value = Math.round(budgetMensile * (t_wants * 0.25));
+
+        // Risparmi
+        document.getElementById('exp_emergenza').value = Math.round(budgetMensile * (t_savings * 0.25));
+        document.getElementById('exp_riserva').value = Math.round(budgetMensile * (t_savings * 0.25));
+        document.getElementById('exp_investimenti').value = Math.round(budgetMensile * (t_savings * 0.50));
 
         calculateBudget();
     }
 
     function calculateBudget() {
-        // 1. Calcolo Budget Disponibile (Rateo Mensilità Aggiuntive)
+        // 1. Calcolo Budget Disponibile
         const stipendio = parseFloat(document.getElementById('in_stipendio').value) || 0;
         const mensilita = parseInt(document.getElementById('in_mensilita').value) || 12;
-        const budgetMensile = (stipendio * mensilita) / 12;
+        const extra = parseFloat(document.getElementById('in_extra').value) || 0;
+        
+        const budgetMensile = ((stipendio * mensilita) / 12) + extra;
         document.getElementById('out_budget_mensile').innerText = formatEur(budgetMensile);
 
-        // 2. Somma Categorie
+        // 2. Lettura Target Strategia
+        const strat = document.getElementById('in_strategia').value;
+        let target_needs = 50, target_wants = 30, target_savings = 20;
+
+        if (strat === '40_20_40') { target_needs = 40; target_wants = 20; target_savings = 40; }
+        if (strat === '60_20_20') { target_needs = 60; target_wants = 20; target_savings = 20; }
+
+        document.querySelectorAll('.target_needs_text').forEach(e => e.innerText = target_needs + '%');
+        document.querySelectorAll('.target_wants_text').forEach(e => e.innerText = target_wants + '%');
+        document.querySelectorAll('.target_savings_text').forEach(e => e.innerText = target_savings + '%');
+
+        // 3. Somma Categorie
         const tot_needs = sumInputs('exp-needs');
         const tot_wants = sumInputs('exp-wants');
         const tot_savings = sumInputs('exp-savings');
         const tot_spese = tot_needs + tot_wants + tot_savings;
         const avanzo = budgetMensile - tot_spese;
 
-        // 3. Percentuali Reali vs Target
+        // 4. Update KPIs Top
+        const pct_speso = budgetMensile > 0 ? (tot_spese / budgetMensile) * 100 : 0;
+        const pct_risparmiato = budgetMensile > 0 ? (tot_savings / budgetMensile) * 100 : 0;
+
+        document.getElementById('out_spese_totali').innerText = formatEur(tot_spese);
+        document.getElementById('out_pct_speso').innerText = `${pct_speso.toFixed(0)}% del budget`;
+        
+        document.getElementById('out_risparmio_totale').innerText = formatEur(tot_savings);
+        document.getElementById('out_pct_risparmio').innerText = `${pct_risparmiato.toFixed(0)}% accantonato`;
+
+        // 5. Calcolo Runway Fondo Emergenza
+        const fondo_accumulato = parseFloat(document.getElementById('in_fondo_accumulato').value) || 0;
+        const mesi_runway = tot_needs > 0 ? (fondo_accumulato / tot_needs) : 0;
+        document.getElementById('out_runway_mesi').innerText = mesi_runway.toFixed(1) + ' Mesi';
+
+        // 6. Percentuali Reali
         const pct_needs = budgetMensile > 0 ? (tot_needs / budgetMensile) * 100 : 0;
         const pct_wants = budgetMensile > 0 ? (tot_wants / budgetMensile) * 100 : 0;
         const pct_savings = budgetMensile > 0 ? (tot_savings / budgetMensile) * 100 : 0;
 
-        // Aggiorna UI Valori
         document.getElementById('val_needs').innerText = `${formatEur(tot_needs)} (${pct_needs.toFixed(1)}%)`;
         document.getElementById('val_wants').innerText = `${formatEur(tot_wants)} (${pct_wants.toFixed(1)}%)`;
         document.getElementById('val_savings').innerText = `${formatEur(tot_savings)} (${pct_savings.toFixed(1)}%)`;
@@ -391,94 +528,86 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         else if (avanzo === 0) { avanzoEl.className = "fs-4 text-success fw-bold"; }
         else { avanzoEl.className = "fs-4 text-primary fw-bold"; }
 
-        // Aggiorna Progress Bars
+        // Progress Bars
         document.getElementById('prog_needs').style.width = Math.min(pct_needs, 100) + '%';
         document.getElementById('prog_wants').style.width = Math.min(pct_wants, 100) + '%';
         document.getElementById('prog_savings').style.width = Math.min(pct_savings, 100) + '%';
 
-        // 4. Logica Status Badges
+        // 7. Status Badges
         const updateBadge = (id, pct, target, isSavings = false) => {
             const badge = document.getElementById(id);
             if (isSavings) {
-                // Per i risparmi, più alto è meglio
                 if (pct >= target) { badge.className = 'status-badge status-ok'; badge.innerText = 'Ottimo'; }
                 else if (pct >= target * 0.5) { badge.className = 'status-badge status-warning'; badge.innerText = 'Basso'; }
                 else { badge.className = 'status-badge status-danger'; badge.innerText = 'Critico'; }
             } else {
-                // Per le spese, più basso/uguale è meglio
                 if (pct <= target + 3) { badge.className = 'status-badge status-ok'; badge.innerText = 'In linea'; }
                 else if (pct <= target + 10) { badge.className = 'status-badge status-warning'; badge.innerText = 'Alto'; }
                 else { badge.className = 'status-badge status-danger'; badge.innerText = 'Eccessivo'; }
             }
         };
 
-        updateBadge('badge_needs', pct_needs, 50);
-        updateBadge('badge_wants', pct_wants, 30);
-        updateBadge('badge_savings', pct_savings, 20, true);
+        updateBadge('badge_needs', pct_needs, target_needs);
+        updateBadge('badge_wants', pct_wants, target_wants);
+        updateBadge('badge_savings', pct_savings, target_savings, true);
 
-        // 5. Generazione Consigli Dinamici (Feedback)
+        // 8. Consigli Dinamici (Feedback)
         let feedbackHTML = '';
         if (avanzo < 0) {
             feedbackHTML = `<div class="advice-box border-danger bg-danger text-white bg-opacity-10 text-dark">
-                <strong><i class="bi bi-exclamation-triangle-fill"></i> Attenzione: Sei in Deficit!</strong><br>
-                Stai spendendo <b>${formatEur(Math.abs(avanzo))}</b> in più di quanto guadagni mensilmente. Rivedi immediatamente le uscite.
+                <strong><i class="bi bi-exclamation-triangle-fill text-danger me-1"></i> Attenzione: Sei in Deficit!</strong><br>
+                Stai spendendo <b>${formatEur(Math.abs(avanzo))}</b> in più rispetto al tuo reddito mensile disponibile. Riduci immediatamente i Desideri.
             </div>`;
-        } else if (pct_savings >= 20 && pct_needs <= 50 && pct_wants <= 30) {
+        } else if (pct_savings >= target_savings && pct_needs <= target_needs && pct_wants <= target_wants) {
             feedbackHTML = `<div class="good-box">
-                <strong><i class="bi bi-trophy-fill text-warning"></i> Gestione Eccellente!</strong><br>
-                Le tue finanze rispettano perfettamente la regola del 50/30/20. Continua a investire e mantenere costanti le tue spese fisse.
+                <strong><i class="bi bi-trophy-fill text-warning me-1"></i> Gestione Eccellente!</strong><br>
+                Rispetti perfettamente i parametri del modello <b>${target_needs}/${target_wants}/${target_savings}</b>. Mantieni costante questo ritmo di risparmio!
             </div>`;
         } else {
             let consigli = [];
-            // Analisi Necessità
-            if (pct_needs > 55) {
+            if (pct_needs > target_needs + 5) {
                 const abit = parseFloat(document.getElementById('exp_abitazione').value) || 0;
-                const auto = parseFloat(document.getElementById('exp_trasporti').value) || 0;
-                if (abit > budgetMensile * 0.35) consigli.push("🏡 <b>Abitazione:</b> Il costo della casa (mutuo/affitto) è troppo alto rispetto al reddito. Cerca di non superare il 30-35%.");
-                if (auto > budgetMensile * 0.15) consigli.push("🚗 <b>Trasporti:</b> Le spese per l'auto incidono troppo. Valuta di ridurre rate o consumi.");
-                if (consigli.length === 0) consigli.push("⚠️ <b>Spese Fisse:</b> Le tue 'Necessità' superano il 50%. Sei vulnerabile agli imprevisti.");
+                if (abit > budgetMensile * 0.35) consigli.push("🏡 <b>Abitazione:</b> Il costo della casa supera il 35% del reddito. Valuta rinegoziazioni o riduzione spese collegate.");
+                else consigli.push("⚠️ <b>Spese Fisse:</b> Le tue 'Necessità' sono alte. Riduci i costi accessori o le bollette per liberare margine.");
             }
-            // Analisi Desideri
-            if (pct_wants > 35) {
-                consigli.push("🛍️ <b>Desideri:</b> Stai spendendo oltre il 30% in svago e shopping. Questa è la prima area da tagliare per recuperare budget.");
+            if (pct_wants > target_wants + 5) {
+                consigli.push("🛍️ <b>Desideri:</b> Stai spendendo oltre il target per lo svago. È la prima area su cui intervenire per aumentare il risparmio.");
             }
-            // Analisi Risparmi
-            if (pct_savings < 15) {
-                const investimenti = parseFloat(document.getElementById('exp_investimenti').value) || 0;
-                if (investimenti === 0) consigli.push("📈 <b>Investimenti:</b> Non stai investendo nulla. L'inflazione eroderà i tuoi risparmi. Valuta l'apertura di un PAC o Fondo Pensione.");
-                else consigli.push("💰 <b>Risparmio:</b> Stai accantonando troppo poco per il tuo futuro. Prova ad automatizzare il risparmio (Pay Yourself First) impostando un bonifico automatico il giorno di paga.");
+            if (pct_savings < target_savings) {
+                consigli.push("💰 <b>Risparmio:</b> Sei sotto il target del " + target_savings + "%. Imposta un bonifico automatico il giorno dello stipendio (Pay Yourself First).");
+            }
+            if (mesi_runway < 3) {
+                consigli.push("🛡️ <b>Fondo Emergenza:</b> La tua riserva copre solo " + mesi_runway.toFixed(1) + " mesi di spese primarie. L'obiettivo consigliato è di almeno 3-6 mesi.");
             }
 
             if (consigli.length > 0) {
                 feedbackHTML = `<div class="advice-box">
-                    <strong><i class="bi bi-lightbulb-fill"></i> Consigli per l'Ottimizzazione:</strong>
+                    <strong><i class="bi bi-lightbulb-fill text-warning me-1"></i> Consigli di Ottimizzazione:</strong>
                     <ul class="mt-2 mb-0 ps-3">
                         ${consigli.map(c => `<li class="mb-1">${c}</li>`).join('')}
                     </ul>
                 </div>`;
-            } else {
-                feedbackHTML = `<div class="good-box"><strong><i class="bi bi-hand-thumbs-up"></i> Buona Gestione</strong><br>Sei sulla strada giusta, ma c'è margine di miglioramento.</div>`;
             }
         }
         document.getElementById('feedback_box').innerHTML = feedbackHTML;
 
-        // 6. Aggiornamento Grafico Chart.js
+        // 9. Aggiornamento Chart.js
         if (chartInstance) { chartInstance.destroy(); }
         
-        const residual = Math.max(0, avanzo); // Non mostrare negativo nel donut
+        const residual = Math.max(0, avanzo);
         const ctx = document.getElementById('budgetChart').getContext('2d');
         
         chartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Necessità (50%)', 'Desideri (30%)', 'Risparmio (20%)', 'Avanzo Non Allocato'],
+                labels: ['Necessità', 'Desideri', 'Risparmio', 'Avanzo Libero'],
                 datasets: [{
                     data: [tot_needs, tot_wants, tot_savings, residual],
                     backgroundColor: [
                         '#f72585', // Needs
                         '#7209b7', // Wants
                         '#4cc9f0', // Savings
-                        '#e9ecef'  // Residual/Empty
+                        '#e9ecef'  // Residual
                     ],
                     borderWidth: 0,
                     hoverOffset: 4
@@ -487,7 +616,7 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '75%', // Sottiletta
+                cutout: '75%',
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -502,11 +631,10 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
         });
     }
 
-    // Inizializza al caricamento (puoi anche chiamare loadOptimal() qui per dare all'utente un esempio precompilato)
+    // Inizializzazione
     window.onload = () => {
-        loadOptimal(); // Carica l'esempio ideale per uno stipendio di base
+        loadOptimal();
     };
-
 </script>
 
 <!-- Bootstrap JS -->
