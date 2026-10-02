@@ -48,7 +48,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             padding-bottom: 3rem;
         }
 
-        /* La navbar ora usa lo sfondo bianco per far risaltare il logo (come in Home Page) */
         .navbar-custom {
             background-color: #ffffff;
             color: var(--primary-color);
@@ -128,7 +127,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             font-weight: 600;
         }
 
-        /* Slider container to align slider and input */
         .slider-group {
             display: flex;
             align-items: center;
@@ -144,11 +142,30 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
     <nav class="navbar navbar-custom py-3 mb-4">
         <div class="container d-flex justify-content-between align-items-center">
             
-            <!-- INIZIO INSERIMENTO LOGO (Lato sinistro) -->
+            <!-- INIZIO LOGO INTEGRATO (Nessun file esterno necessario) -->
             <a href="index.html" class="text-decoration-none">
-                <img src="https://raw.githubusercontent.com/Fintech-SimPro/Simulatori-finanziari/58e3f2d6defacf343cd5d8bef3e8417fced75be8/simpro-svg.svg" alt="Fintech SimPro Logo" style="max-height: 50px; width: auto;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" height="50" style="max-width: 250px;">
+                    <defs>
+                        <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#0d6efd;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#0a58ca;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#198754;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#20c997;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M 50 25 L 110 25 L 130 80 L 90 135 L 50 135 Z" fill="url(#shieldGrad)" opacity="0.95" />
+                    <path d="M 50 25 L 90 25 L 110 80 L 70 135 L 30 80 Z" fill="url(#shieldGrad)" opacity="0.8" />
+                    <rect x="52" y="90" width="14" height="30" rx="3" fill="white" opacity="0.9" />
+                    <rect x="74" y="70" width="14" height="50" rx="3" fill="white" opacity="0.9" />
+                    <rect x="96" y="45" width="14" height="75" rx="3" fill="url(#accentGrad)" />
+                    <text x="160" y="75" font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="44" font-weight="800" fill="#2b2d42">SimPro</text>
+                    <text x="163" y="105" font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#0d6efd" letter-spacing="2">FINANCE &amp; REAL ESTATE</text>
+                    <text x="163" y="130" font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="500" fill="#6c757d" letter-spacing="0.5">I tuoi Simulatori Finanziari</text>
+                </svg>
             </a>
-            <!-- FINE INSERIMENTO LOGO -->
+            <!-- FINE LOGO INTEGRATO -->
             
             <div class="d-flex align-items-center text-end">
                 <span class="mb-0 h1 fs-5 fw-bold d-none d-sm-block me-3" style="color: var(--primary-color);">
@@ -339,7 +356,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             });
             
             num.addEventListener('input', () => {
-                // Ensure value is within bounds
                 let val = parseFloat(num.value);
                 const min = parseFloat(slider.min);
                 const max = parseFloat(slider.max);
@@ -369,7 +385,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 
             // Math
             const netAnnualRate = (grossAnnualYield - ter) / 100;
-            // Compound monthly rate
             const monthlyRate = netAnnualRate / 12;
 
             document.getElementById('badgeNetYield').innerText = (grossAnnualYield - ter).toFixed(2);
@@ -382,7 +397,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             let totalVersato = initialCapital;
             let currentLordo = initialCapital;
 
-            // Compute year by year for the chart
             for (let y = 0; y <= years; y++) {
                 labels.push(`Anno ${y}`);
                 
@@ -391,16 +405,13 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                     dataLordo.push(initialCapital);
                     dataNetto.push(initialCapital);
                 } else {
-                    // Iterate months for this year
                     for (let m = 1; m <= 12; m++) {
                         totalVersato += monthlyPac;
-                        // Compound interest for the month + new PAC deposit at end of month
                         currentLordo = (currentLordo * (1 + monthlyRate)) + monthlyPac;
                     }
 
-                    // Calculate hypothetical Net Value at this year if liquidated
                     let currentPlusvalenza = currentLordo - totalVersato;
-                    if (currentPlusvalenza < 0) currentPlusvalenza = 0; // No taxes on losses
+                    if (currentPlusvalenza < 0) currentPlusvalenza = 0;
                     
                     let currentTasse = currentPlusvalenza * TAX_RATE;
                     let currentNetto = currentLordo - currentTasse;
@@ -411,7 +422,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
                 }
             }
 
-            // Final KPI Values
             const finalVersato = dataVersato[years];
             const finalLordo = dataLordo[years];
             
@@ -421,13 +431,11 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             const finalTasse = finalPlusvalenza * TAX_RATE;
             const finalNetto = finalLordo - finalTasse;
 
-            // Update DOM KPIs
             document.getElementById('kpiVersato').innerText = formatCurrency(finalVersato);
             document.getElementById('kpiLordo').innerText = formatCurrency(finalLordo);
             document.getElementById('kpiTasse').innerText = formatCurrency(finalTasse);
             document.getElementById('kpiNetto').innerText = formatCurrency(finalNetto);
 
-            // Render Chart
             renderChart(labels, dataVersato, dataLordo, dataNetto);
         }
 
@@ -529,7 +537,6 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
             });
         }
 
-        // Initialize on load
         window.onload = () => {
             calculateAndRender();
         };
