@@ -45,22 +45,26 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
       line-height: 1.6;
     }
 
+    /* NUOVO STILE DELL'HEADER (Sfondo bianco per risaltare il logo) */
     header {
-      background: var(--primary);
-      color: white;
-      padding: 3rem 1.5rem;
+      background: #ffffff;
+      color: var(--text-dark);
+      padding: 4rem 1.5rem;
       text-align: center;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
 
     header h1 {
       font-size: 2.2rem;
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 0.8rem;
+      color: var(--text-dark);
     }
 
     header p {
       font-size: 1.1rem;
-      color: #94a3b8;
+      color: #64748b;
       max-width: 650px;
       margin: 0 auto;
     }
@@ -145,9 +149,8 @@ _iub.csConfiguration = {"siteId":4704202,"cookiePolicyId":18603981,"lang":"it","
 <body>
 
   <header>
-    <!-- INIZIO LOGO AGGIUNTO -->
-    <img src="simpro-svg.svg" alt="Fintech SimPro Logo" style="max-height: 100px; width: auto; margin-bottom: 1.5rem;">
-    <!-- FINE LOGO AGGIUNTO -->
+    <!-- LOGO SVG -->
+    <img src="simpro-svg.svg" alt="Fintech SimPro Logo" style="max-height: 110px; width: auto; margin-bottom: 1.5rem;">
     
     <h1>Fintech SimPro: Pianificazione Finanziaria Indipendente</h1>
     <p>Strumenti didattici, calcolatori e modelli pratici per ottimizzare la gestione del tuo patrimonio, la previdenza e gli investimenti.</p>
